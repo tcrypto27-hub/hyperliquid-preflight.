@@ -1,0 +1,82 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Replay 2.0 — comprobación sin enviar</title>
+<style>:root{color-scheme:dark}body{font-family:system-ui,-apple-system,sans-serif;background:#0c1817;color:#e6f6f3;margin:0;padding:22px 18px;line-height:1.4;max-width:760px;min-height:100vh}h1{font-size:1.55rem}p{color:#b0c9c5} .card{background:#112823;border:1px solid #27443d;padding:14px;border-radius:12px;margin:12px 0}.warning{background:#40271b;color:#ffdfb8}button{background:#47c7a6;color:#0b1815;border:0;border-radius:12px;padding:16px;font-weight:700;font-size:1rem;width:100%;cursor:pointer}button:disabled{opacity:.45}.entry{border-bottom:1px solid #29453c;padding:10px 0}.ok{color:#74ffbd}.bad{color:#ff9292}.info{color:#fbe29c}.monospace{font-family:ui-monospace,monospace;font-size:.8rem;overflow-wrap:anywhere}#results:empty{display:none}strong{color:#e4faf4}</style></head>
+<body>
+<b class="ok">ETAPA 2.0 · SOLO LECTURA · SIN FIRMAS</b>
+<h1>Preflight del primer replay</h1>
+<p>Comprobación independiente posterior al despliegue. Únicamente consulta HyperEVM y simula <code>handleOps</code> con <code>eth_call</code>. No contiene ninguna operación de envío.</p>
+<div class="card warning"><strong>NO se autoriza ningún replay con esta página.</strong> No introduzcas frases ni claves. Si aparece una firma inesperada, rechazala. No hay reintentos automáticos ni códigos descargados de otras páginas.</div>
+<div class="card"><div>Smart Wallet: <span class="monospace">0xa3bbc955…69d5</span></div><div>Wallet conectada esperada: <span class="monospace">0xfc689c3b…662a</span></div><div>Destino de la simulación: <span class="monospace">EntryPoint v0.6 0x5ff137…2789</span></div><div>Operación: <b>handleOps · nonce key 8453 / seq 0</b></div><div>Alta esperada posterior al replay real: <span class="monospace">owner índice 3 → 0x017bd466…b249</span></div><div>Sin transferencia de HYPE ni activos. Límite de simulación: 1,977,592 gas.</div></div>
+<div class="card"><b>Conexión de la wallet (solo permiso para ver dirección pública)</b><p>GitHub Pages será un origen web diferente al antiguo sitio de prueba. Si Rabby todavía no muestra tu cuenta, conecta aquí y selecciona exclusivamente la cuenta que termina en 662a. Esta acción no solicita firmas ni envía transacciones.</p><button id="connect">Conectar Rabby — solo dirección pública</button><div id="connect-result" class="monospace" role="status" aria-live="polite"></div></div>
+<button id="run">Comprobar y simular replay 2.0 — no firma ni envía</button>
+<div id="results" class="card" role="status" aria-live="polite"></div>
+<p class="monospace">SHA-256 esperado de la calldata: e311b46ae1398d44007813eedbc614acdfd33289ad0efcd72c6ba26e1698db58</p>
+<script>
+"use strict";
+const C = {"wallet":"0xa3bbc955301cb3456b382e84036f4baa6dba69d5","owner":"0xfc689c3ba45960a8b47d0f9f207feea6eb84662a","entry":"0x5ff137d4b0fdcd49dca30c7cf57e578a026d2789","factory":"0xba5ed110efdba3d005bfc882d75358acbbb85842","impl":"0x00000110dcdedc9581cb5ecb8467282f2926534d","owner0":"f5811bae85fa535744841cc1ab72e84ea7a46095e331a112af6ea87b0532359ac12a786729c31f9b99108963ccfe58525b8345cbf08290dabed860eeb7a37078","owner1":"0xd5c3e5fea28f9eaebf0f0d759418280a26243380","owner2":"0xf85210b21cc50302f477ba56686d2019dc9b67ad","firstNew":"0x017bd466eaee63f22578702a1851c6d10a0ab249","lastTx":"0x94edd8ad6935fd0ff08cacd6e13667ffb8bac08eb1e354d4eac4e1ca08a46fbf","gas":1977592,"calldata":"0x1fad948c0000000000000000000000000000000000000000000000000000000000000040000000000000000000000000fc689c3ba45960a8b47d0f9f207feea6eb84662a00000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000020000000000000000000000000a3bbc955301cb3456b382e84036f4baa6dba69d50000000000000000000000000000000000000000000021050000000000000000000000000000000000000000000000000000000000000000000000000000016000000000000000000000000000000000000000000000000000000000000001800000000000000000000000000000000000000000000000000000000000015bb800000000000000000000000000000000000000000000000000000000000b71b0000000000000000000000000000000000000000000000000000000000002491400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000028000000000000000000000000000000000000000000000000000000000000002a0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000c42c2abd1e00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000240f0f3f24000000000000000000000000017bd466eaee63f22578702a1851c6d10a0ab2490000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002800000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000c00000000000000000000000000000000000000000000000000000000000000120000000000000000000000000000000000000000000000000000000000000001700000000000000000000000000000000000000000000000000000000000000019b1825976aae1c74fe56095ff0a86678a0ef0984b745621b03d5f9ce9f2c711076a53ee21e06a7b2450435a4ad8fabdaaf0f0570c76173ddffb20b6aebcf63660000000000000000000000000000000000000000000000000000000000000025f198086b2db17256731bc456673b96bcef23f51d1fbacdd7c4379ef65465572f1d00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008a7b2274797065223a22776562617574686e2e676574222c226368616c6c656e6765223a2265765633557a4a7847765161533978696264554370585f7867317155713879756f484f6758544e54655630222c226f726967696e223a2268747470733a2f2f6b6579732e636f696e626173652e636f6d222c2263726f73734f726967696e223a66616c73657d00000000000000000000000000000000000000000000","calldata_sha256":"e311b46ae1398d44007813eedbc614acdfd33289ad0efcd72c6ba26e1698db58","nonce_key":8453,"expected_seq":0,"extra":{"baseOriginalTx":"0x388bfa0ae885bb17fee65087fa3ba8e29f6bc029158180f849c0994ada57a533"}};
+const btn=document.getElementById('run'),box=document.getElementById('results');
+const lower=x=>String(x||'').toLowerCase();
+const w=x=>BigInt(x).toString(16).padStart(64,'0');
+const status=(label,good,details)=>{const div=document.createElement('div');div.className='entry';const s=document.createElement('strong');s.className=good===true?'ok':good===false?'bad':'info';s.textContent=(good===true?'✔ ':good===false?'✘ ':'• ')+label;div.append(s); if(details!==undefined){const d=document.createElement('div');d.className='monospace';d.textContent=String(details);div.append(d)}box.append(div);return good===true};
+const provider=()=>{const p=window.ethereum;if(!p)return null;return Array.isArray(p.providers)?p.providers.find(x=>x.isRabby)||p.providers[0]:p;};
+function words(ret){if(typeof ret!=='string'||!/^0x[0-9a-f]*$/i.test(ret)||ret.length<66)throw new Error('respuesta RPC vacía/malformada');let b=ret.slice(2),a=[];for(let i=0;i+64<=b.length;i+=64)a.push(b.slice(i,i+64).toLowerCase());return a;}
+function addr(ret){return '0x'+words(ret)[0].slice(-40)}
+function bytesResult(ret){const a=words(ret);if(a.length<2)throw new Error('ownerAtIndex incompleto');const off=Number(BigInt('0x'+a[0]));if(off!==32)throw new Error('ownerAtIndex offset inesperado');const n=Number(BigInt('0x'+a[1]));if(![32,64].includes(n))throw new Error('ownerAtIndex tamaño inesperado '+n);const body=ret.slice(2+128,2+128+n*2);if(body.length!==n*2)throw new Error('bytes insuficientes');return body.toLowerCase()}
+async function run(){btn.disabled=true;box.replaceChildren();const p=provider();if(!status('Proveedor Rabby compatible',!!p,!!p?'Detectado':'No detectado')){btn.disabled=false;return}
+const rpc=async(method,params=[])=>p.request({method,params});let pre=true,block;
+try{
+const chain=Number(BigInt(await rpc('eth_chainId')));
+pre=status('Red HyperEVM 999',chain===999,'chainId = '+chain)&&pre;
+const ac=(await rpc('eth_accounts')||[]).map(lower);
+pre=status('Owner 7 seleccionado',ac[0]===C.owner,'Cuenta: '+(ac[0]||'ninguna'))&&pre;
+if(!pre){status('Detenido: conecta owner 7 en la red 999',null);return}
+block=await rpc('eth_blockNumber');status('Blockchain responde',true,'Bloque '+Number(BigInt(block)));
+const call=async(to,data)=>rpc('eth_call',[{to,data},block]);
+const [r,code]=await Promise.all([rpc('eth_getTransactionReceipt',[C.lastTx]),rpc('eth_getCode',[C.wallet,block])]);
+pre=status('Recibo despliegue: éxito y partes correctas',!!r&&BigInt(r.status||'0x0')===1n&&lower(r.from)===C.owner&&lower(r.to)===C.factory,'hash '+C.lastTx+' · status '+(r?.status||'sin recibo')+' · from '+(r?.from||'ausente')+' · to '+(r?.to||'ausente'))&&pre;
+pre=status('Contrato desplegado',typeof code==='string'&&code!=='0x', 'code bytes '+(code?.length?Math.floor((code.length-2)/2):'sin datos'))&&pre;
+if(!pre){status('No simular: no pasa validación de despliegue',null);return}
+const [imp,ent,cnt,nxt]=await Promise.all([call(C.wallet,'0x5c60da1b'),call(C.wallet,'0xb0d691fe'),call(C.wallet,'0x0db02622'),call(C.wallet,'0xd948fd2e')]);
+pre=status('Implementación exacta',lower(addr(imp))===C.impl,'implementation '+addr(imp))&&pre;
+pre=status('EntryPoint exacto',lower(addr(ent))===C.entry,'entryPoint '+addr(ent))&&pre;
+const count=BigInt(cnt),next=BigInt(nxt);
+pre=status('Hay 3 propietarios iniciales (sin replays previos)',count===3n&&next===3n,'ownerCount '+count+' · nextOwnerIndex '+next)&&pre;
+for(let i=0;i<3;i++){
+const b=bytesResult(await call(C.wallet,'0x8ea69029'+w(i)));
+const exp=i===0?C.owner0:'0'.repeat(24)+C['owner'+i].slice(2);
+pre=status('Owner inicial '+i+' coincide exactamente',b===exp,'tamaño '+b.length/2+' bytes; '+(i===0?'P-256 (clave completa)':('dirección 0x'+b.slice(-40))))&&pre;
+}
+const nonce=BigInt(await call(C.entry,'0x35567e1a'+w(BigInt(C.wallet))+w(8453)));
+const key=nonce>>64n, seq=nonce&((1n<<64n)-1n);
+pre=status('Nonce replayable key 8453 / seq 0',key===8453n&&seq===0n,'key '+key+' · seq '+seq)&&pre;
+let sha;
+try{const raw=new Uint8Array(C.calldata.slice(2).match(/../g).map(x=>parseInt(x,16)));const d=await crypto.subtle.digest('SHA-256',raw);sha=[...new Uint8Array(d)].map(x=>x.toString(16).padStart(2,'0')).join('');}catch(e){status('Hash SHA-256 no disponible en este navegador',false,e.message);return}
+pre=status('Calldata de replay 2.0 íntegra',sha===C.calldata_sha256,'SHA-256 '+sha)&&pre;
+const codeEntry=await rpc('eth_getCode',[C.entry,block]);
+pre=status('EntryPoint tiene código',!!codeEntry&&codeEntry!=='0x', 'code bytes '+(codeEntry?.length?Math.floor((codeEntry.length-2)/2):'sin datos'))&&pre;
+const gasprice=BigInt(await rpc('eth_gasPrice'));
+const balance=BigInt(await rpc('eth_getBalance',[C.owner,block]));
+const needed=BigInt(C.gas)*gasprice*2n;
+pre=status('Saldo cubre reserva de gas (2× gasPrice)',balance>needed,'balance '+balance+' wei · reserva '+needed+' wei · gasPrice '+gasprice+' wei')&&pre;
+if(!pre){status('Preflight NO completo. No simular ni ejecutar el replay.',false);return}
+let evmSim;
+try{
+evmSim=await rpc('eth_call',[{from:C.owner,to:C.entry,data:C.calldata,gas:'0x'+BigInt(C.gas).toString(16),value:'0x0'},'latest']);
+status('eth_call de handleOps: NO REVIERTE (éxito interno NO comprobado)',true,'Resultado '+evmSim+' · no equivale a UserOperationEvent.success=true; solo se confirma ese evento tras ejecución real.');
+}catch(e){status('eth_call del handleOps firmado: FALLÓ — NO EJECUTAR',false,(e&&e.message)||String(e));return}
+status('LECTURAS PREVIAS OK · REPLAY REAL NO AUTORIZADO',true,'No se ha demostrado el éxito interno de la UserOperation. Solo lectura; comparte el resultado, no firmes ni envíes.');
+}catch(e){status('Error de lectura: detener y revisar',false,(e&&e.message)||String(e));}finally{btn.disabled=false}}
+const connectBtn=document.getElementById('connect');
+connectBtn.addEventListener('click',async()=>{
+  const out=document.getElementById('connect-result');
+  out.textContent='Solicitando permiso únicamente para consultar la dirección pública…';
+  const p=provider();
+  if(!p){out.textContent='No se detecta un proveedor wallet. Abre esta página DENTRO del navegador de Rabby.';return;}
+  try{
+    const addresses=await p.request({method:'eth_requestAccounts'});
+    const current=Array.isArray(addresses)&&addresses[0]?String(addresses[0]).toLowerCase():'';
+    const chain=Number(BigInt(await p.request({method:'eth_chainId'})));
+    out.textContent='Cuenta: '+(current||'ninguna')+' | Red: '+chain+(current===C.owner?' | Owner 7 correcto':' | ATENCIÓN: seleccionar owner 7 (662a) dentro de Rabby')+' | NO se solicitó firma ni transacción.';
+  }catch(e){out.textContent='Conexión denegada o falló: '+String(e?.message||e);}
+});
+btn.addEventListener('click',run);
+</script></body></html>
