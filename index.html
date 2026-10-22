@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="es">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Replay 2.1 — Preflight de solo lectura</title>
+<style>
+:root{color-scheme:dark;--bg:#091918;--fg:#e4f7f3;--panel:#13302b;--line:#2f574d;--good:#65edaf;--bad:#ff9a8c;--warn:#ffd58f}
+*{box-sizing:border-box}body{font:15px/1.5 system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--fg);margin:0;padding:24px 16px;max-width:840px;margin-inline:auto}
+h1{font-size:1.6rem;line-height:1.25}h2{font-size:1.05rem;margin:0 0 12px}.box{background:var(--panel);border:1px solid var(--line);padding:16px;border-radius:12px;margin:16px 0}
+.warning{background:#3a261d;border-left:4px solid #f3a56c}.mono,code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;overflow-wrap:anywhere}code{font-size:.8rem}button{color:#05231a;background:#55dcb7;font:600 1rem system-ui;padding:15px;width:100%;border:0;border-radius:9px;margin:7px 0;cursor:pointer}
+button:disabled{opacity:.5}.ok{color:var(--good)}.bad{color:var(--bad)}.warn{color:var(--warn)}.row{padding:12px 0;border-bottom:1px solid var(--line)}.row:last-child{border-bottom:0}.detail{font:12px/1.5 ui-monospace,monospace;overflow-wrap:anywhere;opacity:.88}#results:empty{display:none}
+</style></head>
+<body>
+<b class="ok">HyperEVM 999 · REPLAY 2.1 · SOLO LECTURA</b>
+<h1>Preflight del segundo replay histórico</h1>
+<div class="box warning"><strong>No permite firmar ni enviar transacciones.</strong> Solo verifica el replay 2.0 ya ejecutado, la identidad del contrato y la simulación de 2.1. No ingreses frases, claves privadas ni códigos de recuperación. Si Rabby solicita una firma inesperada, cancélala.</div>
+<div class="box">
+<h2>Qué intentaría una ejecución futura</h2>
+<div>Smart Wallet: <code>0xa3bbc955…69d5</code></div>
+<div>Wallet seleccionada: <code>0xfc689c3b…662a</code> (Owner 7)</div>
+<div>EntryPoint: <code>0x5ff137d4…2789</code></div>
+<div><strong>Previo requerido:</strong> Replay 2.0 confirmado, Owner 3 activo, nonce key 8453 / seq 1</div>
+<div><strong>Siguiente operación:</strong> <code>handleOps</code>, añade Owner índice 4 <code>0xdc061403…c60d</code></div>
+<div>Valor: 0 HYPE. Límite propuesto (futura transacción): <code>1,997,488</code> gas.</div>
+<p class="warn">Este Owner 4 obtendría permisos completos en la Smart Wallet. Todavía no está demostrado quién controla su clave. No autorices ese cambio únicamente porque el preflight sea verde.</p>
+</div>
+<div class="box"><h2>Conectar cuenta (solo dirección pública)</h2><button id="connect">Conectar Rabby — solo permiso de dirección</button><div id="conn-status" class="detail" aria-live="polite">Sin conectar.</div></div>
+<div class="box"><h2>Comprobación de solo lectura</h2><button id="run">Comprobar y simular Replay 2.1 — NO firma ni envía</button><div id="results" role="status" aria-live="polite"></div></div>
+<p class="detail">SHA-256 de calldata original, Replay 2.1: <span id="digestExpected"></span></p>
+<p class="detail">Fuente: paquete histórico <code>Auditoria_Rescate_R1.zip / results/plan_calldata.json</code>. Este archivo es de solo lectura. Cualquier actualización futura que permita enviar transacciones necesita revisión separada y autorización explícita.</p>
+<script id="conf" type="application/json">{"chainId":999,"wallet":"0xa3bbc955301cb3456b382e84036f4baa6dba69d5","owner7":"0xfc689c3ba45960a8b47d0f9f207feea6eb84662a","entry":"0x5ff137d4b0fdcd49dca30c7cf57e578a026d2789","impl":"0x00000110dcdedc9581cb5ecb8467282f2926534d","owners":[{"index":0,"bytes":"f5811bae85fa535744841cc1ab72e84ea7a46095e331a112af6ea87b0532359ac12a786729c31f9b99108963ccfe58525b8345cbf08290dabed860eeb7a37078"},{"index":1,"bytes":"000000000000000000000000d5c3e5fea28f9eaebf0f0d759418280a26243380"},{"index":2,"bytes":"000000000000000000000000f85210b21cc50302f477ba56686d2019dc9b67ad"},{"index":3,"bytes":"000000000000000000000000017bd466eaee63f22578702a1851c6d10a0ab249"}],"newOwner4":"0xdc06140339066c8cd1c5291072f1381437fcc60d","priorTx":"0x73652ae4f58bb97de9c6ccce893b962aaf1ae190582e2e667c2bf3c58d3f697c","priorUserOpNonce":"155930327655066839810048","expectedSeq":1,"nextSeq":2,"priorOwner3":"0x017bd466eaee63f22578702a1851c6d10a0ab249","nextOwnerIndex":4,"calldata":"0x1fad948c0000000000000000000000000000000000000000000000000000000000000040000000000000000000000000fc689c3ba45960a8b47d0f9f207feea6eb84662a00000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000020000000000000000000000000a3bbc955301cb3456b382e84036f4baa6dba69d50000000000000000000000000000000000000000000021050000000000000001000000000000000000000000000000000000000000000000000000000000016000000000000000000000000000000000000000000000000000000000000001800000000000000000000000000000000000000000000000000000000000015bb800000000000000000000000000000000000000000000000000000000000b71b00000000000000000000000000000000000000000000000000000000000026ff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000028000000000000000000000000000000000000000000000000000000000000002a0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000c42c2abd1e00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000240f0f3f24000000000000000000000000dc06140339066c8cd1c5291072f1381437fcc60d0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002800000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000012000000000000000000000000000000000000000000000000000000000000000170000000000000000000000000000000000000000000000000000000000000001e23caf6e6355cfa888228d808b72cee196de30980c3bfae3bd1b865ec78bfc6a65c7b1a6bff6f8b14957143f4d1b62f4e63370cc958b80c8920ff19c1ebfebe90000000000000000000000000000000000000000000000000000000000000025f198086b2db17256731bc456673b96bcef23f51d1fbacdd7c4379ef65465572f1d00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008a7b2274797065223a22776562617574686e2e676574222c226368616c6c656e6765223a226f5232716c344c5265436b494e36364d7065716b473172746836342d734e31503958416b356e4175687851222c226f726967696e223a2268747470733a2f2f6b6579732e636f696e626173652e636f6d222c2263726f73734f726967696e223a66616c73657d00000000000000000000000000000000000000000000","calldataSHA256":"975eeeef0ded00fb385e2f1a08a0b800a63d6b4a3f223648ca3b8fe51c198a8f","gasLimit":1997488,"topicUserOp":"0x49628fd1471006c1482da88028e9ce4dbb080b815c9b0344d39e5a8e6ec1419f","topicAddOwner":"0x38109edc26e166b5579352ce56a50813177eb25208fd90d61f2f378386220220"}</script>
+<script>
+"use strict";
+const C=JSON.parse(document.getElementById('conf').textContent), btn=document.getElementById('run'),result=document.getElementById('results');
+const lower=x=>String(x||'').toLowerCase(),word=x=>BigInt(x).toString(16).padStart(64,'0');
+const prov=()=>{const p=window.ethereum;if(!p)return null;return Array.isArray(p.providers)?p.providers.find(x=>x.isRabby)||p.providers[0]:p;};
+const status=(heading,ok,info)=>{const row=document.createElement('div');row.className='row';const top=document.createElement('div');top.className=ok===true?'ok':ok===false?'bad':'warn';top.textContent=(ok===true?'✓ ':ok===false?'✗ ':'• ')+heading;row.append(top);if(info!==undefined){const t=document.createElement('div');t.className='detail';t.textContent=String(info);row.append(t)}result.append(row);return ok===true};
+const asWords=h=>{if(typeof h!=='string'||!/^0x[0-9a-f]+$/i.test(h)||h.length<66)throw Error('RPC vacía o no hexadecimal');const s=h.slice(2),parts=[];for(let i=0;i+64<=s.length;i+=64)parts.push(s.slice(i,i+64).toLowerCase());return parts};
+const addrFromCall=h=>'0x'+asWords(h)[0].slice(-40);
+const decodeOwner=hex=>{const W=asWords(hex);if(W.length<2||BigInt('0x'+W[0])!==32n)throw Error('ABI ownerAtIndex inválida');const n=Number(BigInt('0x'+W[1]));if(![32,64].includes(n))throw Error('ownerAtIndex longitud inesperada '+n);const b=hex.slice(130,130+n*2).toLowerCase();if(b.length!==n*2)throw Error('Respuesta ABI truncada');return b};
+const asNonce=hex=>{const n=BigInt(hex);return {key:n>>64n,seq:n&((1n<<64n)-1n)}};
+function priorEvent(receipt){
+let uo=0,ao=0;
+for(const l of receipt.logs||[]){const topics=(l.topics||[]).map(lower);if(lower(l.address)===C.entry&&topics[0]===C.topicUserOp){
+ const sender='0x'+(topics[2]||'').replace(/^0x/,'').slice(-40);
+ if(sender!==C.wallet)continue;
+ const body=lower(l.data).replace(/^0x/,'');if(body.length<128)continue;
+ if(BigInt('0x'+body.slice(0,64))===BigInt(C.priorUserOpNonce)&&BigInt('0x'+body.slice(64,128))===1n)uo++;
+ }
+ if(lower(l.address)===C.wallet&&topics[0]===C.topicAddOwner&&topics[1]&&BigInt(topics[1])===3n){
+   try{if(decodeOwner(l.data)==='0'.repeat(24)+C.priorOwner3.slice(2))ao++;}catch(_){}
+ }
+}
+return {uo,ao};
+}
+async function digest(h){const b=h.slice(2).match(/.{2}/g).map(x=>parseInt(x,16));if(!globalThis.crypto?.subtle)throw Error('No hay WebCrypto en este origen seguro: detener');const out=await crypto.subtle.digest('SHA-256',new Uint8Array(b));return [...new Uint8Array(out)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+async function connect(){const out=document.getElementById('conn-status'),p=prov();if(!p){out.textContent='Sin proveedor. Abrir dentro del navegador de Rabby.';return}
+try{const addresses=await p.request({method:'eth_requestAccounts'});const a=lower(addresses?.[0]);const c=Number(BigInt(await p.request({method:'eth_chainId'})));out.textContent=`Cuenta ${a}; red ${c}. ${a===C.owner7&&c===999?'Propietario esperado y red correctos':'ATENCIÓN: Owner 7 y red 999 necesarios'}. No se solicitó firma ni transacción.`}catch(e){out.textContent='Permiso denegado/error: '+String(e?.message||e)}}
+async function run(){btn.disabled=true;result.replaceChildren();const p=prov();try{
+ if(!status('Proveedor disponible',!!p,!!p?'EIP-1193 detectado':'Abre la página dentro de Rabby'))return;
+ const rpc=(method,params=[])=>p.request({method,params});
+ const chain=Number(BigInt(await rpc('eth_chainId'))),accts=await rpc('eth_accounts');
+ const a=lower(accts?.[0]);const c1=status('Red HyperEVM (999)',chain===999,'Chain ID: '+chain);const c2=status('Cuenta Owner 7',a===C.owner7,'Expuesta: '+(a||'ninguna'));
+ if(!c1||!c2){status('Detenido, no simular',false,'Conecta la cuenta Owner 7 en red HyperEVM');return}
+ const block=await rpc('eth_blockNumber');status('Bloque de referencia',true,Number(BigInt(block)));
+ const call=(to,data)=>rpc('eth_call',[{to,data},block]);
+ const receipt=await rpc('eth_getTransactionReceipt',[C.priorTx]);
+ const okReceipt=!!receipt&&BigInt(receipt.status||'0x0')===1n&&lower(receipt.from)===C.owner7&&lower(receipt.to)===C.entry;
+ if(!status('Recibo del Replay 2.0 auténtico y exitoso',okReceipt,'Hash '+C.priorTx+' · status '+(receipt?.status||'sin recibo'))){return}
+ const events=priorEvent(receipt);if(!status('Éxito INTERNO y evento AddOwner del Replay 2.0',events.uo===1&&events.ao===1,'UserOperationEvent éxito exacto: '+events.uo+' · AddOwner índice 3 exacto: '+events.ao))return;
+ const code=await rpc('eth_getCode',[C.wallet,block]);if(!status('Smart Wallet desplegada',!!code&&code!=='0x','Bytecode bytes: '+((code?.length||2)-2)/2))return;
+ const vals=await Promise.all([call(C.wallet,'0x5c60da1b'),call(C.wallet,'0xb0d691fe'),call(C.wallet,'0x0db02622'),call(C.wallet,'0xd948fd2e')]);
+ const imp=addrFromCall(vals[0]),ep=addrFromCall(vals[1]),count=BigInt(vals[2]),next=BigInt(vals[3]);
+ const idOk=imp===C.impl&&ep===C.entry&&count===4n&&next===4n;
+ if(!status('Identidad del contrato y propietarios actuales',idOk,`implementation ${imp} · EntryPoint ${ep} · ownerCount ${count} · nextOwnerIndex ${next}`))return;
+ for(const owner of C.owners){const live=decodeOwner(await call(C.wallet,'0x8ea69029'+word(owner.index)));if(!status('Owner '+owner.index+' coincide exactamente',live===owner.bytes,'Longitud '+live.length/2+' bytes · '+(owner.index===0?'clave P-256 pública verificada':'0x'+live.slice(-40))))return;}
+ const raw=await call(C.entry,'0x35567e1a'+word(C.wallet)+word(8453));const n=asNonce(raw);
+ if(!status('Nonce key 8453, secuencia 1',n.key===8453n&&n.seq===1n,`key ${n.key} · seq ${n.seq}`))return;
+ const future=BigInt(await call(C.wallet,'0xa2e1a8d8'+word(C.newOwner4)));
+ if(!status('Owner 4 aún NO autorizado',future===0n,'isOwnerAddress: '+future))return;
+ const observed=await digest(C.calldata);if(!status('Calldata original Replay 2.1 íntegra',observed===C.calldataSHA256,'SHA-256 '+observed))return;
+ const entryCode=await rpc('eth_getCode',[C.entry,block]);if(!status('EntryPoint v0.6 disponible',!!entryCode&&entryCode!=='0x','Bytecode bytes '+((entryCode?.length||2)-2)/2))return;
+ const [balance,price]=await Promise.all([rpc('eth_getBalance',[C.owner7,block]),rpc('eth_gasPrice')]);const required=BigInt(C.gasLimit)*BigInt(price)*2n;
+ if(!status('Gas suficiente para reserva estimada',BigInt(balance)>=required,`Saldo ${BigInt(balance)} wei · reserva ${required} wei · gasPrice ${BigInt(price)} wei`))return;
+ const sim=await rpc('eth_call',[{from:C.owner7,to:C.entry,data:C.calldata,value:'0x0',gas:'0x'+BigInt(C.gasLimit).toString(16)},block]);
+ if(!status('Simulación handleOps NO REVIERTE (éxito interno DESCONOCIDO)',typeof sim==='string'&&sim.startsWith('0x'),'Resultado: '+sim))return;
+ status('PREFLIGHT COMPLETADO. No se ha enviado ni firmado nada.',true,'El resultado es solo de lectura. La ejecución real necesita revisión adicional; NO firmes ni envíes.');
+ }catch(e){status('ERROR: preflight incompleto',false,String(e?.message||e))}
+ finally{btn.disabled=false}}
+document.getElementById('digestExpected').textContent=C.calldataSHA256;
+document.getElementById('connect').addEventListener('click',connect);
+btn.addEventListener('click',run);
+</script></body></html>
