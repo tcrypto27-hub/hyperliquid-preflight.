@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-Uv3u2DPAqV8n9mQ7PEfRhhuxnd5q13w5BNfCqM8RQ64='; style-src 'self' 'sha256-B0KbqJj8XFbdFzfiaEsaGh8ksWKisgCXemfXbQQGk5Y='; connect-src https://rpc.hyperliquid.xyz https://api.hyperliquid.xyz; img-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'">
+<title>USDE-TEST-1-v1 · prueba de 1 USDE</title>
+<style>
+:root{color-scheme:dark;--bg:#0c181b;--panel:#15272b;--line:#355057;--text:#eef6f6;--soft:#b3c7cd;--mint:#85ebbe;--red:#ffaea1;--warn:#ffdc93}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.55 system-ui,sans-serif;padding:24px 16px;max-width:920px;margin-inline:auto}h1{font-size:1.8rem;line-height:1.2}h2{font-size:1.2rem}.tag{color:var(--mint);font-size:.85rem;font-weight:700;letter-spacing:.05em}.panel{background:var(--panel);border:1px solid var(--line);padding:18px;border-radius:14px;margin:16px 0}.warning{background:#35251c;border:1px solid #795838;padding:14px;border-radius:10px}.mono,pre,code{font:13px/1.6 ui-monospace,monospace;overflow-wrap:anywhere;white-space:pre-wrap}pre{max-height:360px;overflow:auto;padding:12px;background:#081316;border-radius:8px}button{width:100%;padding:15px;border:0;border-radius:10px;margin:7px 0;font:700 1rem system-ui;cursor:pointer;background:var(--mint);color:#05261b}button:disabled{opacity:.42;cursor:not-allowed}button.secondary{background:#29464d;color:var(--text)}button.real{background:#ffc481;color:#302112}input[type=text]{width:100%;padding:14px;border:1px solid var(--line);background:var(--bg);color:var(--text);border-radius:8px;font:15px ui-monospace,monospace}input[type=checkbox]{width:22px;height:22px;vertical-align:middle;margin:12px 8px 12px 0}.notice{margin-top:14px;padding:12px;border-left:4px solid var(--soft);white-space:pre-wrap;overflow-wrap:anywhere}.bad{color:var(--red)}.warn{color:var(--warn)}.ok{color:var(--mint)}.row{padding:12px 0;border-bottom:1px solid var(--line)}small,.soft{color:var(--soft)}summary{cursor:pointer;font-weight:700;padding:8px 0}#hashNotice{font-weight:700;color:var(--warn);overflow-wrap:anywhere}
+</style>
+</head>
+<body>
+<div class="tag" id="version">USDE-TEST-1-v1</div>
+<h1>Prueba de transferencia: 1 USDE</h1>
+<p>Una única operación fija desde el saldo Spot de la Smart Wallet hacia tu cuenta principal.</p>
+<div class="warning"><b>Esta página puede solicitar una transacción REAL.</b> La firma y el envío se aprueban manualmente en Rabby. Usá una sola pestaña y conservá los datos del sitio hasta resolver el resultado. Nunca introduzcas frases ni claves.</div>
+<section class="panel">
+<h2>1 · Destino y alcance de la prueba</h2>
+<p class="mono">Cantidad: 1 USDE · token 235 · 8 decimales
+Origen en HyperCore: 0xa3bbc955301cb3456b382e84036f4baa6dba69d5
+Destino principal: 0x8d6ee7d1e00fc44cc790b33b2d104570e184702b
+Firma y gas: Owner 7 · 0xfc689c3ba45960a8b47d0f9f207feea6eb84662a
+Red: HyperEVM 999 · nonce exterior previsto: 6
+Límite de gas: 150000 · techo de comisión: 0.003 HYPE</p>
+<p id="integrity" class="soft">Verificando referencia local…</p>
+</section>
+<section class="panel">
+<h2>2 · Conectar y comprobar</h2>
+<button id="connect" class="secondary">Conectar Rabby · solo dirección pública</button>
+<button id="check">Comprobar estado y simular 1 USDE · solo lectura</button>
+<p id="chainState" class="mono">Estado EVM pendiente de lectura.</p>
+<p id="coreState" class="mono">Estado HyperCore pendiente de lectura.</p>
+<div id="checks"></div>
+<p class="soft">Las lecturas de estado EVM usan <code>latest</code>. El bloque mostrado es el observado durante la consulta; no representa una instantánea atómica. Se vuelve a comprobar antes de solicitar la transacción.</p>
+</section>
+<section class="panel">
+<h2>3 · Revisar la solicitud fija</h2>
+<pre id="parameters">Los parámetros y la comisión máxima aparecerán al comprobar el estado.</pre>
+<details><summary>Ver calldata completa y su hash</summary><pre id="raw"></pre></details>
+<div class="warning">Abrir la solicitud en Rabby prepara una operación real. Revisá <b>View Raw</b>: <b>Sign</b> transmite y consume gas; <b>Cancel</b> la rechaza. Una simulación EVM correcta todavía no demuestra que HyperCore haya procesado la transferencia.</div>
+<label><input type="checkbox" id="accept">Comprendo que solicitaré enviar exactamente 1 USDE hacia mi cuenta principal y que la firma final en Rabby transmite.</label>
+<label for="typed">Escribí ENVIAR 1 USDE</label>
+<input type="text" id="typed" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="ENVIAR 1 USDE (no una clave)">
+<button id="request" class="real" disabled>Abrir la prueba de 1 USDE en Rabby · REAL</button>
+<div id="hashNotice" role="status"></div>
+<div id="message" class="notice" role="status" aria-live="polite">Inicializando…</div>
+</section>
+<section class="panel">
+<h2>4 · Verificar el resultado</h2>
+<button id="reconcile" class="secondary">Verificar recibo y evento EVM · solo lectura</button>
+<p id="coreStatus" class="notice">HyperCore pendiente. Un recibo EVM exitoso requiere una comprobación adicional del movimiento entre ambas cuentas. Un resultado pendiente nunca habilita repetir la prueba.</p>
+<details><summary>Recuperar un hash existente · no envía</summary>
+<label for="recoverHash">Hash público de esta prueba de 1 USDE</label>
+<input type="text" id="recoverHash" autocomplete="off" spellcheck="false" placeholder="0x… (64 caracteres hexadecimales)">
+<button id="importHash" class="secondary">Validar y registrar hash existente</button>
+</details>
+<button id="export" class="secondary">Guardar registro público completo · JSON sin secretos</button>
+<details><summary>Ver registro de esta prueba</summary><pre id="log"></pre></details>
+<p class="soft">La página se detiene después de esta única solicitud. La confirmación final en HyperCore se realiza por separado con los saldos y los registros de ambas cuentas. Los datos públicos disponibles se incluyen en el registro exportado.</p>
+</section>
+<script>
+(() => {
+'use strict';
+const C=Object.freeze({"version":"USDE-TEST-1-v1","chainId":999,"rpc":"https://rpc.hyperliquid.xyz/evm","info":"https://api.hyperliquid.xyz/info","from":"0xfc689c3ba45960a8b47d0f9f207feea6eb84662a","wallet":"0xa3bbc955301cb3456b382e84036f4baa6dba69d5","implementation":"0x00000110dcdedc9581cb5ecb8467282f2926534d","entryPoint":"0x5ff137d4b0fdcd49dca30c7cf57e578a026d2789","coreWriter":"0x3333333333333333333333333333333333333333","destination":"0x8d6ee7d1e00fc44cc790b33b2d104570e184702b","token":{"name":"USDE","index":235,"tokenId":"0x2e6d84f2d7ca82e6581e03523e4389f7","weiDecimals":8},"amount":"1","amount_units":"100000000","value":"0x0","rawAction":"0x010000060000000000000000000000008d6ee7d1e00fc44cc790b33b2d104570e184702b00000000000000000000000000000000000000000000000000000000000000eb0000000000000000000000000000000000000000000000000000000005f5e100","writerCall":"0x17938e1300000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000064010000060000000000000000000000008d6ee7d1e00fc44cc790b33b2d104570e184702b00000000000000000000000000000000000000000000000000000000000000eb0000000000000000000000000000000000000000000000000000000005f5e10000000000000000000000000000000000000000000000000000000000","calldata":"0xb61d27f600000000000000000000000033333333333333333333333333333333333333330000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000c417938e1300000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000064010000060000000000000000000000008d6ee7d1e00fc44cc790b33b2d104570e184702b00000000000000000000000000000000000000000000000000000000000000eb0000000000000000000000000000000000000000000000000000000005f5e1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000","calldata_bytes":356,"calldata_sha256":"418d9b81feb7d11eb1a30cdd6af737e93fed9198694fd866c35e1a81060539a5","eventTopic":"0x8c7f585fb295f7eb1e6aeb8fba61b23a4fe60beda405f0045073b185c74412e3","eventData":"0x00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000064010000060000000000000000000000008d6ee7d1e00fc44cc790b33b2d104570e184702b00000000000000000000000000000000000000000000000000000000000000eb0000000000000000000000000000000000000000000000000000000005f5e10000000000000000000000000000000000000000000000000000000000","allOwners":["f5811bae85fa535744841cc1ab72e84ea7a46095e331a112af6ea87b0532359ac12a786729c31f9b99108963ccfe58525b8345cbf08290dabed860eeb7a37078","000000000000000000000000d5c3e5fea28f9eaebf0f0d759418280a26243380","000000000000000000000000f85210b21cc50302f477ba56686d2019dc9b67ad","000000000000000000000000017bd466eaee63f22578702a1851c6d10a0ab249","000000000000000000000000dc06140339066c8cd1c5291072f1381437fcc60d","000000000000000000000000abccbd520994efae7c01bb7dd865da83419e09d8","000000000000000000000000d8c0cefb1689fac2b2f869da6761e89ec35b1401","000000000000000000000000fc689c3ba45960a8b47d0f9f207feea6eb84662a"],"ownerCount":8,"internalNonceKey":8453,"internalSequence":5,"externalNonce":6,"gas":150000,"maxFeeBudgetWei":"3000000000000000","codeSHA256":{"proxy":"c5731b62fc7c36236463af8d362688e37c08823abcda35d71ad7d1220eebf578","impl":"232b9f0ef7a71b67bafd3a4bacc47e81bc93374e27d3ed37b6eaa66da5000269","entry":"009b0281380fb08973d2b8e55936c0d55f5a1d65ddc5713944420e119455620c","coreWriter":"fd053fae53aa5ff797c8de9d38f5180d3c280228ae2d669ef9a83ab7834dac83"},"sourceSpotBeforeUnits":"20267717531","destinationSpotBeforeUnits":"0","sourceSpotAfterUnits":"20167717531","destinationSpotAfterUnits":"100000000","replay24Hash":"0xfc8770af509e42854bdd4e14ead7ef51004eca9640a71048ee039b68dfc1ee28","sourceMode":"default","destinationMode":"unifiedAccount","scope":"One USDE Spot transfer only. No USDC movements, owner changes, automatic sends or retries."});
+const PREFIX='tcrypto_usde_test_1_v1',LOCK='tcrypto_rescate_999_manual';
+const $=id=>document.getElementById(id),lc=x=>String(x??'').toLowerCase();
+const hx=n=>'0x'+BigInt(n).toString(16),wd=n=>BigInt(n).toString(16).padStart(64,'0');
+const HASH=/^0x[0-9a-f]{64}$/,ADDRESS=/^0x[0-9a-f]{40}$/;
+const READ_METHODS=new Set(['eth_chainId','eth_getBlockByNumber','eth_getCode','eth_getBalance','eth_gasPrice','eth_call','eth_getTransactionCount','eth_getTransactionByHash','eth_getTransactionReceipt']);
+const INFO_TYPES=new Set(['spotMeta','userAbstraction','spotClearinghouseState','clearinghouseState','openOrders','userNonFundingLedgerUpdates']);
+const WALLET_METHODS=new Set(['eth_accounts','eth_chainId','eth_requestAccounts','eth_sendTransaction']);
+let provider=null,busy=false,ready=null,fatal='',integrity=false,contextVersion=0,volatileHash=null;
+let lastState=null,lastCore=null,lastProof=null,lastCoreEvidence=null,rpcId=0;
+const trace=[],attached=new WeakSet();
+function assert(ok,msg){if(!ok)throw Error(msg);}
+function quantity(x,label){assert(typeof x==='string'&&/^0x[0-9a-f]+$/i.test(x),'RPC inválido: '+label);return BigInt(x);}
+function hexBytes(x,label){assert(typeof x==='string'&&/^0x(?:[0-9a-f]{2})*$/i.test(x),'Bytes inválidos: '+label);return x.toLowerCase();}
+function wordAt(h,offset){const s=hexBytes(h,'ABI').slice(2+offset*2,2+(offset+32)*2);assert(s.length===64,'ABI incompleta');return BigInt('0x'+s);}
+function addrAt(h,offset=0){const s=hexBytes(h,'dirección').slice(2+offset*2,2+(offset+32)*2);assert(s.length===64&&s.slice(0,24)==='0'.repeat(24),'Dirección ABI inválida');return '0x'+s.slice(24);}
+function ownerDecode(h){assert(wordAt(h,0)===32n,'Offset owner inválido');const n=Number(wordAt(h,32));assert(n===32||n===64,'Longitud owner inválida');const s=h.slice(130,130+n*2);assert(s.length===n*2,'Owner truncado');return lc(s);}
+function encodedBytes(h){const s=hexBytes(h,'bytes dinámicos').slice(2);return wd(s.length/2)+s.padEnd(Math.ceil(s.length/64)*64,'0');}
+function decimalUnits(x,decimals=8){assert(typeof x==='string'&&/^(?:0|[1-9][0-9]*)(?:\.[0-9]+)?$/.test(x),'Cantidad decimal inválida');const [a,b='']=x.split('.');assert(b.length<=decimals||/^0*$/.test(b.slice(decimals)),'Precisión decimal inesperada');return BigInt(a)*10n**BigInt(decimals)+BigInt((b.slice(0,decimals).padEnd(decimals,'0'))||'0');}
+function formatUnits(n,decimals=18){n=BigInt(n);const scale=10n**BigInt(decimals),tail=(n%scale).toString().padStart(decimals,'0').replace(/0+$/,'');return (n/scale).toString()+(tail?'.'+tail:'');}
+function serialize(value){return JSON.stringify(value,(_,v)=>typeof v==='bigint'?v.toString():v,2);}
+function deepFreeze(value){if(value&&typeof value==='object'&&!Object.isFrozen(value)){for(const v of Object.values(value))deepFreeze(v);Object.freeze(value);}return value;}
+async function sha(h){const s=hexBytes(h,'SHA-256');assert(crypto?.subtle,'Se requiere HTTPS y WebCrypto');const bytes=Uint8Array.from(s.slice(2).match(/../g)||[],x=>parseInt(x,16));return [...new Uint8Array(await crypto.subtle.digest('SHA-256',bytes))].map(x=>x.toString(16).padStart(2,'0')).join('');}
+async function audit(){
+ for(const v of [C.from,C.wallet,C.implementation,C.entryPoint,C.coreWriter,C.destination])assert(ADDRESS.test(v),'Dirección de referencia inválida');
+ assert(C.chainId===999&&C.externalNonce===6&&C.gas===150000&&C.value==='0x0','Parámetros fijos alterados');
+ assert(C.amount==='1'&&C.amount_units==='100000000'&&C.token.name==='USDE'&&C.token.index===235&&C.token.weiDecimals===8,'Importe o token alterado');
+ assert(C.ownerCount===8&&C.allOwners.length===8&&C.allOwners[7]===wd(C.from),'Owner 7 de referencia incorrecto');
+ assert(C.internalNonceKey===8453&&C.internalSequence===5&&C.maxFeeBudgetWei==='3000000000000000','Límites del plan alterados');
+ const raw='0x01000006'+wd(C.destination)+wd(C.token.index)+wd(C.amount_units);
+ const writer='0x17938e13'+wd(32)+encodedBytes(raw);
+ const call='0xb61d27f6'+wd(C.coreWriter)+wd(0)+wd(96)+encodedBytes(writer);
+ assert(raw===C.rawAction&&writer===C.writerCall&&call===C.calldata,'Calldata no corresponde a la transferencia fija');
+ assert(C.calldata_bytes===356&&(C.calldata.length-2)/2===356&&await sha(C.calldata)===C.calldata_sha256,'Calldata o hash de referencia alterados');
+ assert(C.eventData==='0x'+wd(32)+encodedBytes(raw),'Evento de referencia alterado');
+ assert(C.eventTopic==='0x8c7f585fb295f7eb1e6aeb8fba61b23a4fe60beda405f0045073b185c74412e3','Topic RawAction incorrecto');
+ for(const v of Object.values(C.codeSHA256))assert(/^[0-9a-f]{64}$/.test(v),'Pin de bytecode inválido');
+ for(const v of Object.values(C))deepFreeze(v);
+ integrity=true;$('integrity').textContent='Calldata fija verificada: 356 bytes · 1 USDE · acción Spot 6 · token 235.';
+ $('raw').textContent=C.calldata+'\n\nSHA-256: '+C.calldata_sha256;
+}
+function storageLoad(){
+ let raw;try{raw=localStorage.getItem(PREFIX);}catch(_){throw Error('Registro local inaccesible; no enviar');}
+ if(raw===null)return {v:1,chain:999,plan:C.calldata_sha256,record:null,history:[]};
+ let d;try{d=JSON.parse(raw);}catch(_){throw Error('Registro local dañado; no borrar ni repetir');}
+ assert(d&&d.v===1&&d.chain===999&&d.plan===C.calldata_sha256&&Array.isArray(d.history),'Registro de otro plan o formato inválido');
+ if(d.record!==null){const r=d.record;assert(r&&typeof r==='object'&&!Array.isArray(r),'Registro inválido');assert(['open','sent','uncertain','rejected','failed','evm_confirmed'].includes(r.state),'Estado local inválido');assert(r.nonce===String(C.externalNonce)&&r.dataSHA256===C.calldata_sha256,'Registro de otra transacción');if(r.hash)assert(HASH.test(r.hash),'Hash guardado inválido');if(r.state==='rejected')assert(!r.hash,'Rechazo incompatible con hash existente');if(['sent','evm_confirmed'].includes(r.state))assert(HASH.test(r.hash||''),'Falta hash guardado');}
+ return d;
+}
+function storageSave(d){const s=serialize(d);try{localStorage.setItem(PREFIX,s);assert(localStorage.getItem(PREFIX)===s,'No persiste el registro');}catch(_){throw Error('No se pudo conservar el registro. No repetir.'+(volatileHash?' HASH: '+volatileHash:''));}}
+function storageTest(){const key=PREFIX+'_probe',value=String(Date.now());try{localStorage.setItem(key,value);assert(localStorage.getItem(key)===value,'Sin persistencia');localStorage.removeItem(key);storageLoad();}catch(e){throw Error('Registro inaccesible o dañado: '+e.message);}}
+function blockedRecord(){const r=storageLoad().record;return !!r&&r.state!=='rejected';}
+function setRecord(patch){const d=storageLoad(),old=d.record;if(old?.hash&&patch.hash)assert(old.hash===patch.hash,'Ya existe otro hash; no sobrescribir');if(old?.state==='evm_confirmed')assert(!patch.state||patch.state==='evm_confirmed','El recibo ya está confirmado; no degradar el registro');if(old?.state==='failed')assert(!patch.state||patch.state==='failed','Hay una operación fallida; detener');d.record={...old,nonce:String(C.externalNonce),dataSHA256:C.calldata_sha256,...patch};storageSave(d);return d.record;}
+function beginRequest(record){const d=storageLoad();assert(!d.record||d.record.state==='rejected','Ya existe una solicitud; no repetir');if(d.record)d.history.push(d.record);d.record={nonce:String(C.externalNonce),dataSHA256:C.calldata_sha256,...record};storageSave(d);}
+function logView(){try{$('log').textContent=serialize(storageLoad());}catch(e){$('log').textContent=e.message;}}
+function message(text,kind=''){const n=$('message');n.textContent=text;n.className='notice '+kind;}
+function line(title,detail='',kind='ok'){const row=document.createElement('div');row.className='row '+kind;const a=document.createElement('b');a.textContent=title;const b=document.createElement('div');b.className='mono';b.textContent=detail;row.append(a,b);$('checks').append(row);}
+function update(){let blocked=true;try{blocked=blockedRecord();}catch(_){}const fresh=ready&&Date.now()-ready.time<60000&&!busy&&!fatal&&integrity&&!blocked;$('request').disabled=!(fresh&&$('accept').checked&&$('typed').value==='ENVIAR 1 USDE');for(const id of ['connect','check','reconcile','importHash'])$(id).disabled=busy;logView();}
+function resetReady(){ready=null;$('accept').checked=false;$('typed').value='';update();}
+function invalidateContext(){contextVersion++;resetReady();message('Cuenta o red cambió. Repetí la comprobación de lectura; nunca una transacción incierta.','warn');}
+function findProvider(){const e=window.ethereum;if(!e)return null;return Array.isArray(e.providers)?e.providers.find(p=>p.isRabby)||e.providers[0]:e;}
+function attachProvider(p){assert(p?.request,'Abrí la página dentro de Rabby');if(provider&&provider!==p)invalidateContext();provider=p;if(p.on&&!attached.has(p)){p.on('chainChanged',invalidateContext);p.on('accountsChanged',invalidateContext);attached.add(p);}return p;}
+async function walletRpc(method,params=[]){assert(WALLET_METHODS.has(method),'Método de wallet no permitido');assert(provider?.request,'Conectá Rabby');return provider.request({method,params});}
+async function walletContext(){const cv=contextVersion;assert(quantity(await walletRpc('eth_chainId'),'chainId wallet')===999n,'Red equivocada: se requiere HyperEVM 999');const a=await walletRpc('eth_accounts');assert(Array.isArray(a)&&lc(a[0])===C.from,'Seleccioná Owner 7 '+C.from+' en Rabby');assert(cv===contextVersion,'Cuenta/red cambió durante la lectura');return cv;}
+async function post(url,body,kind){
+ assert(url===C.rpc||url===C.info,'Endpoint no autorizado');const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),18000);
+ const entry={kind,request:body,requestedAt:new Date().toISOString()};trace.push(entry);
+ try{const response=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),cache:'no-store',credentials:'omit',redirect:'error',referrerPolicy:'no-referrer',signal:controller.signal});assert(response.ok,'Error HTTP '+response.status+' en '+kind);const data=await response.json();entry.response=data;entry.completedAt=new Date().toISOString();return data;}catch(e){entry.error=String(e.message||e);throw Error('Falló lectura '+kind+': '+entry.error);}finally{clearTimeout(timer);}
+}
+async function rpc(method,params=[]){assert(READ_METHODS.has(method),'Método RPC público no permitido');const id=++rpcId,data=await post(C.rpc,{jsonrpc:'2.0',id,method,params},method);assert(data&&data.id===id,'Respuesta RPC no corresponde');if(data.error)throw Error(data.error.message||'Error RPC');assert(Object.prototype.hasOwnProperty.call(data,'result'),'RPC sin resultado');return data.result;}
+async function info(type,extra={}){assert(INFO_TYPES.has(type),'Consulta HyperCore no permitida');return post(C.info,{type,...extra},'HyperCore '+type);}
+async function chainState(){
+ assert(quantity(await rpc('eth_chainId'),'chainId RPC')===999n,'El RPC no corresponde a HyperEVM 999');
+ const header=await rpc('eth_getBlockByNumber',['latest',false]);assert(header&&HASH.test(lc(header.hash)),'Cabecera actual inválida');const bn=quantity(header.number,'bloque observado');
+ const codeEvidence={};await Promise.all([['proxy',C.wallet],['impl',C.implementation],['entry',C.entryPoint],['coreWriter',C.coreWriter]].map(async([key,address])=>{const code=await rpc('eth_getCode',[address,'latest']);const digest=await sha(code);codeEvidence[key]={address,bytes:(code.length-2)/2,sha256:digest};assert(digest===C.codeSHA256[key],'Bytecode inesperado: '+key+'; obtenido '+digest);}));
+ const call=(to,data)=>rpc('eth_call',[{to,data},'latest']);
+ const [im,ep,count,next,authorized,nonce]=await Promise.all([call(C.wallet,'0x5c60da1b'),call(C.wallet,'0xb0d691fe'),call(C.wallet,'0x0db02622'),call(C.wallet,'0xd948fd2e'),call(C.wallet,'0xa2e1a8d8'+wd(C.from)),call(C.entryPoint,'0x35567e1a'+wd(C.wallet)+wd(C.internalNonceKey))]);
+ assert(addrAt(im)===C.implementation&&addrAt(ep)===C.entryPoint,'Implementación o EntryPoint inesperado');assert(quantity(count,'ownerCount')===8n&&quantity(next,'nextOwnerIndex')===8n,'Se requieren exactamente ocho propietarios y nextOwnerIndex 8');assert(quantity(authorized,'owner7')===1n,'Owner 7 no está autorizado');assert(quantity(nonce,'nonce interno')===(8453n<<64n)+5n,'Nonce interno fuera del estado final de replays');
+ const owners=await Promise.all(C.allOwners.map((_,i)=>call(C.wallet,'0x8ea69029'+wd(i))));for(let i=0;i<8;i++)assert(ownerDecode(owners[i])===C.allOwners[i],'Propietario '+i+' inesperado');
+ const [balanceHex,gasHex,latestHex,pendingHex]=await Promise.all([rpc('eth_getBalance',[C.from,'latest']),rpc('eth_gasPrice'),rpc('eth_getTransactionCount',[C.from,'latest']),rpc('eth_getTransactionCount',[C.from,'pending'])]);
+ const balance=quantity(balanceHex,'saldo'),gasPrice=quantity(gasHex,'gasPrice'),latest=quantity(latestHex,'nonce exterior'),pending=quantity(pendingHex,'nonce pendiente');assert(gasPrice>0n,'Gas price inválido');assert(latest===6n&&pending===6n,'Nonce exterior distinto de 6 o transacción pendiente. No repetir.');
+ const base=quantity(header.baseFeePerGas,'baseFeePerGas'),cap=2n*(gasPrice>base?gasPrice:base),cost=BigInt(C.gas)*cap;
+ assert(BigInt(C.gas)<=quantity(header.gasLimit,'gas del bloque'),'Gas fijo excede el bloque');assert(cost<=BigInt(C.maxFeeBudgetWei),'Gas supera el tope local de 0.003 HYPE; no enviar');assert(balance>=cost,'Saldo HYPE insuficiente para el máximo solicitado');
+ return {observedBlock:header.number,bn,header,codeEvidence,ownerCount:8,nextOwnerIndex:8,owner7:true,internalSequence:5,nonce:latest,balance,gasPrice,base,cap,cost,checkedAt:Date.now()};
+}
+function spotBalance(state,label){assert(state&&Array.isArray(state.balances),'Respuesta Spot inválida: '+label);const found=state.balances.filter(b=>b.token===C.token.index||b.coin===C.token.name);assert(found.length===1,'USDE ausente o ambiguo: '+label);const b=found[0];assert(b.token===235&&b.coin==='USDE','Identidad de saldo USDE incorrecta: '+label);return {total:decimalUnits(b.total),hold:decimalUnits(b.hold),raw:b};}
+async function coreBefore(){
+ const [meta,sourceMode,destinationMode,sourceSpot,destinationSpot,positions,orders]=await Promise.all([info('spotMeta'),info('userAbstraction',{user:C.wallet}),info('userAbstraction',{user:C.destination}),info('spotClearinghouseState',{user:C.wallet}),info('spotClearinghouseState',{user:C.destination}),info('clearinghouseState',{user:C.wallet}),info('openOrders',{user:C.wallet})]);
+ assert(meta&&Array.isArray(meta.tokens),'Metadatos Spot inválidos');const tokens=meta.tokens.filter(t=>t.index===235||t.name==='USDE');assert(tokens.length===1,'Token USDE ausente o ambiguo');const token=tokens[0];assert(token.index===235&&token.name==='USDE'&&token.weiDecimals===8&&lc(token.tokenId)===C.token.tokenId,'Metadatos USDE no coinciden');
+ assert(sourceMode===C.sourceMode&&destinationMode===C.destinationMode,'Modo de cuenta HyperCore inesperado');
+ const source=spotBalance(sourceSpot,'origen'),destination=spotBalance(destinationSpot,'destino');assert(source.total===BigInt(C.sourceSpotBeforeUnits)&&source.hold===0n,'Saldo o hold USDE del origen cambió. Detener; no repetir.');assert(destination.total===BigInt(C.destinationSpotBeforeUnits)&&destination.hold===0n,'Saldo o hold USDE del destino cambió. Detener; no repetir.');
+ assert(positions&&Array.isArray(positions.assetPositions)&&positions.assetPositions.length===0,'El origen tiene posiciones o respuesta inválida');assert(positions.marginSummary&&decimalUnits(positions.marginSummary.totalMarginUsed)===0n,'Margen utilizado inesperado');assert(Array.isArray(orders)&&orders.length===0,'El origen tiene órdenes o respuesta inválida');
+ return {token,sourceMode,destinationMode,source,destination,sourceSpot,destinationSpot,positions,orders,checkedAt:Date.now()};
+}
+function transaction(s){return {chainId:'0x3e7',from:C.from,to:C.wallet,value:'0x0',data:C.calldata,gas:hx(C.gas),maxFeePerGas:hx(s.cap),maxPriorityFeePerGas:'0x0',nonce:'0x6'};}
+function showState(s,core){lastState=s;lastCore=core;$('chainState').textContent='Bloque observado '+s.bn+' · ocho propietarios · Owner 7 autorizado · nonce exterior 6 · saldo '+formatUnits(s.balance)+' HYPE';$('coreState').textContent='USDE origen '+formatUnits(core.source.total,8)+' · hold 0 · destino '+formatUnits(core.destination.total,8)+' · hold 0';$('parameters').textContent=serialize(transaction(s));line('Estado EVM verificado','Proxy, implementación, EntryPoint, CoreWriter, ocho owners y nonces exactos.');line('Estado HyperCore antes de la prueba','USDE token 235; origen default, destino unifiedAccount; sin órdenes ni posiciones en origen.');line('Máximo solicitado de gas',formatUnits(s.cost)+' HYPE · '+C.gas+' gas × '+s.cap+' wei/gas. Rabby puede recalcular: revisar View Raw.');}
+async function preflight(simulate=true){
+ assert(integrity&&!fatal,'Integridad local no verificada');storageTest();assert(!blockedRecord(),'Ya existe una solicitud de esta prueba. Verificá su hash; no repetir.');
+ attachProvider(provider||findProvider());const cv=await walletContext();const s=await chainState();const core=await coreBefore();
+ assert(navigator.locks?.request,'Web Locks no disponible: lectura posible, solicitud deshabilitada');
+ if(simulate){const result=await rpc('eth_call',[{from:C.from,to:C.wallet,value:'0x0',data:C.calldata,gas:hx(C.gas)},'latest']);assert(result==='0x','Retorno inesperado de la simulación EVM');}
+ await walletContext();assert(cv===contextVersion,'Cuenta o red cambió durante la comprobación');assert(!blockedRecord(),'Apareció otra solicitud; no repetir');
+ showState(s,core);if(simulate)line('Simulación EVM sin revert','No confirma el procesamiento de HyperCore.','warn');return {...s,core,contextVersion:cv,time:Date.now()};
+}
+async function inspect(){if(busy)return;busy=true;resetReady();$('checks').replaceChildren();try{const s=await preflight(true);ready=s;message('Comprobación correcta para revisar la única prueba de 1 USDE. La firma final requiere tu aprobación en Rabby.','ok');}catch(e){message(e.message,'bad');}finally{busy=false;update();}}
+async function submit(){
+ if(busy)return;update();if($('request').disabled)return;const reviewed=ready;busy=true;resetReady();volatileHash=null;$('hashNotice').textContent='';
+ try{assert(navigator.locks?.request,'Sin bloqueo entre pestañas');await navigator.locks.request(LOCK,{ifAvailable:true},async lock=>{
+  assert(lock,'Otra pestaña está preparando una operación');assert(!blockedRecord(),'Existe una solicitud pendiente; no repetir');$('checks').replaceChildren();
+  const s=await preflight(true);assert(s.cap<=reviewed.cap,'La comisión aumentó; repetir solo la comprobación y revisar');
+  const yes=window.confirm('PRUEBA REAL: enviar exactamente 1 USDE desde '+C.wallet+' hacia '+C.destination+'. Máximo solicitado de gas '+formatUnits(s.cost)+' HYPE. Sign en Rabby transmite. ¿Abrir esta solicitud única?');if(!yes){message('Cancelado antes de solicitar Rabby.');return;}
+  assert(Date.now()-s.time<60000,'Comprobación vencida; volver a comprobar');const cv=await walletContext();assert(cv===s.contextVersion,'Cuenta/red cambió; comprobar otra vez');
+  const now=await chainState();const core=await coreBefore();assert(now.cap<=s.cap&&now.balance>=s.cost,'Gas o saldo cambió; repetir solo la comprobación');
+  await walletContext();assert(cv===contextVersion&&Date.now()-s.time<60000,'Contexto cambió o comprobación vencida');
+  const [latest,pending]=await Promise.all([rpc('eth_getTransactionCount',[C.from,'latest']),rpc('eth_getTransactionCount',[C.from,'pending'])]);assert(quantity(latest,'nonce final')===6n&&quantity(pending,'nonce final pendiente')===6n,'Nonce cambió o hay otra transacción; no enviar');assert(cv===contextVersion&&!blockedRecord(),'Cambió el contexto o existe otra solicitud');
+  const tx=transaction(s);beginRequest({state:'open',hash:null,requestedAt:Date.now(),tx,preflight:{evm:now,core},referenceBlock:now.observedBlock});
+  message('Solicitud REAL abierta en Rabby. No pulses de nuevo. Sign transmite; Cancel rechaza.','warn');update();let result;
+  try{result=await walletRpc('eth_sendTransaction',[tx]);}catch(e){const code=Number(e?.code??e?.data?.code);if(code===4001){setRecord({state:'rejected',error:String(e.message||e)});message('Rabby notificó rechazo (4001). Podés volver a comprobar antes de abrir otra solicitud.','warn');}else{setRecord({state:'uncertain',error:String(e.message||e)});message('RESULTADO INCIERTO. No repetir. Consultá actividad de Rabby y registrá su hash si existe.','bad');}return;}
+  assert(HASH.test(lc(result)),'La wallet devolvió un hash inválido; resultado incierto, no repetir');volatileHash=lc(result);$('hashNotice').textContent='HASH DE LA PRUEBA — guardalo: '+volatileHash;
+  setRecord({state:'sent',hash:volatileHash});message('Solicitud enviada. Verificá el recibo EVM y después el procesamiento en HyperCore. No repetir la prueba.','warn');
+ });}catch(e){try{const r=storageLoad().record;if(r?.state==='open')setRecord({state:'uncertain',error:String(e.message||e),...(volatileHash?{hash:volatileHash}:{})});}catch(_){}message(String(e.message||e)+(volatileHash?' HASH: '+volatileHash:''),'bad');}finally{busy=false;update();}
+}
+async function verifyTransaction(hash){
+ const tx=await rpc('eth_getTransactionByHash',[hash]);assert(tx&&lc(tx.hash)===hash,'Transacción no encontrada');assert(lc(tx.from)===C.from&&lc(tx.to)===C.wallet&&quantity(tx.value,'value')===0n,'La transacción no corresponde al plan');assert(quantity(tx.chainId,'chainId tx')===999n&&quantity(tx.type,'tipo tx')===2n,'Cadena o tipo de transacción inesperado');
+ const data=hexBytes(tx.input??tx.data,'calldata ejecutada');assert(data===C.calldata&&await sha(data)===C.calldata_sha256,'Calldata ejecutada distinta de la referencia');assert(quantity(tx.nonce,'nonce tx')===6n&&quantity(tx.gas,'gas tx')===150000n,'Nonce o límite de gas distinto del plan');
+ const cap=quantity(tx.maxFeePerGas,'maxFeePerGas'),priority=quantity(tx.maxPriorityFeePerGas,'maxPriorityFeePerGas');assert(cap>0n&&priority<=cap&&cap*150000n<=BigInt(C.maxFeeBudgetWei),'Comisión de la transacción fuera del límite');
+ return {tx,cap};
+}
+async function verifyReceipt(hash){
+ assert(HASH.test(hash),'Hash inválido');assert(quantity(await rpc('eth_chainId'),'chainId RPC')===999n,'RPC en otra cadena');
+ const {tx,cap}=await verifyTransaction(hash),receipt=await rpc('eth_getTransactionReceipt',[hash]);
+ if(!receipt)throw Object.assign(Error('SIN RECIBO. Mantener pendiente; no repetir.'),{receiptPending:true,hash,transaction:tx});
+ assert(lc(receipt.transactionHash)===hash,'Recibo de otro hash');assert(lc(receipt.from)===C.from&&lc(receipt.to)===C.wallet,'Recibo de otro remitente/destino');
+ const used=quantity(receipt.gasUsed,'gasUsed'),paid=quantity(receipt.effectiveGasPrice,'effectiveGasPrice');assert(used<=150000n&&paid<=cap,'Gas efectivo inesperado');
+ assert(HASH.test(lc(receipt.blockHash))&&lc(tx.blockHash)===lc(receipt.blockHash)&&quantity(tx.blockNumber,'tx block')===quantity(receipt.blockNumber,'receipt block'),'Bloques de recibo y transacción no coinciden');
+ const [block,head]=await Promise.all([rpc('eth_getBlockByNumber',[receipt.blockNumber,false]),rpc('eth_getBlockByNumber',['latest',false])]);assert(block&&lc(block.hash)===lc(receipt.blockHash)&&quantity(block.number,'bloque canónico')===quantity(receipt.blockNumber,'bloque recibo'),'El bloque del recibo no es canónico');assert(head&&quantity(head.number,'bloque actual')>=quantity(receipt.blockNumber,'bloque recibo')+1n,'Esperar al menos otro bloque y verificar de nuevo, sin repetir la transacción');
+ const status=quantity(receipt.status,'status');if(status===0n)throw Object.assign(Error('Transacción EVM fallida. No repetir automáticamente.'),{receiptFailure:true});assert(status===1n,'Estado de recibo inválido');
+ assert(Array.isArray(receipt.logs),'Recibo sin logs');let count=0;
+ for(const log of receipt.logs){assert(log.removed!==true,'Evento eliminado por reorganización');if(lc(log.address)!==C.coreWriter||lc(log.topics?.[0])!==C.eventTopic)continue;assert(log.topics.length===2&&lc(log.topics[1])==='0x'+wd(C.wallet),'RawAction emitido para otro usuario');assert(hexBytes(log.data,'evento RawAction')===C.eventData,'RawAction contiene otra acción');assert(lc(log.transactionHash)===hash&&lc(log.blockHash)===lc(receipt.blockHash)&&quantity(log.blockNumber,'log block')===quantity(receipt.blockNumber,'receipt block'),'Evento no corresponde al recibo');count++;}
+ assert(count===1,'Se requiere un único RawAction exacto');return {hash,evmConfirmed:true,coreConfirmed:false,transaction:tx,receipt,block,gasCostWei:String(used*paid),verifiedAt:Date.now()};
+}
+async function collectCoreEvidence(proof){
+ const timestamp=Number(quantity(proof.block.timestamp,'timestamp'))*1000,startTime=Math.max(0,timestamp-120000),endTime=Date.now();
+ const jobs=[['sourceSpot',()=>info('spotClearinghouseState',{user:C.wallet})],['destinationSpot',()=>info('spotClearinghouseState',{user:C.destination})],['sourceLedger',()=>info('userNonFundingLedgerUpdates',{user:C.wallet,startTime,endTime})],['destinationLedger',()=>info('userNonFundingLedgerUpdates',{user:C.destination,startTime,endTime})]];
+ const results=await Promise.allSettled(jobs.map(([,run])=>run()));const evidence={observedAt:Date.now(),coreConfirmed:false,startTime,endTime,errors:{}};results.forEach((r,i)=>{if(r.status==='fulfilled')evidence[jobs[i][0]]=r.value;else evidence.errors[jobs[i][0]]=String(r.reason?.message||r.reason);});return evidence;
+}
+async function confirmEvm(hash,imported=false){
+ const proof=await verifyReceipt(hash);lastProof=proof;volatileHash=hash;$('hashNotice').textContent='HASH DE LA PRUEBA — guardalo: '+hash;
+ setRecord({state:'evm_confirmed',hash,proof,...(imported?{imported:true}:{})});
+ message('EVM CONFIRMADO: recibo, transacción y RawAction exactos. HyperCore pendiente de verificación. No repetir.','ok');
+ $('coreStatus').textContent='HyperCore pendiente de verificación independiente. La prueba queda bloqueada para nuevos envíos, aunque los saldos parezcan correctos.';
+ try{lastCoreEvidence=await collectCoreEvidence(proof);setRecord({state:'evm_confirmed',coreEvidence:lastCoreEvidence});const errors=Object.keys(lastCoreEvidence.errors);if(errors.length)line('EVM confirmado; algunas lecturas HyperCore no disponibles',errors.join(', ')+'. Exportá el registro; no repetir.','warn');else line('Evidencia HyperCore guardada para revisión','Saldos y ledger de ambas cuentas. Esta página no declara confirmación final de HyperCore.','warn');}catch(e){lastCoreEvidence={coreConfirmed:false,error:String(e.message||e)};line('EVM confirmado; evidencia HyperCore pendiente',String(e.message||e)+'. No repetir.','warn');}
+ return proof;
+}
+async function reconcile(){if(busy)return;busy=true;resetReady();$('checks').replaceChildren();try{storageTest();const r=storageLoad().record,hash=r?.hash||volatileHash;assert(hash,'No hay hash guardado. Si el resultado es incierto, consultá Rabby e ingresá el hash; no repetir.');await confirmEvm(hash);}catch(e){if(e.receiptFailure){try{setRecord({state:'failed',error:e.message});}catch(_){}}message(e.message,'bad');}finally{busy=false;update();}}
+async function importHash(){if(busy)return;busy=true;resetReady();let hash;try{storageTest();hash=lc($('recoverHash').value.trim());assert(HASH.test(hash),'Ingresá un hash público válido, no claves ni calldata');const r=storageLoad().record;assert(!r?.hash||r.hash===hash,'Ya existe otro hash; no sobrescribir');await confirmEvm(hash,true);}catch(e){if(e.receiptPending){volatileHash=hash;$('hashNotice').textContent='HASH PENDIENTE DE LA PRUEBA — guardalo: '+hash;try{setRecord({state:'uncertain',hash,imported:true,pendingTransaction:e.transaction,error:e.message});message('Hash exacto conservado. Todavía sin recibo; resultado pendiente, no repetir.','warn');}catch(storageError){message(storageError.message+' HASH: '+hash,'bad');}}else{if(e.receiptFailure){try{setRecord({state:'failed',hash,error:e.message});}catch(_){}}message(e.message,'bad');}}finally{busy=false;update();}}
+async function connect(){if(busy)return;busy=true;resetReady();try{attachProvider(findProvider());await walletRpc('eth_requestAccounts');await walletContext();message('Owner 7 conectado en HyperEVM 999. Podés comprobar el estado sin enviar.','ok');}catch(e){message(e.message,'bad');}finally{busy=false;update();}}
+function exportReport(){try{const data={version:C.version,config:C,state:lastState,coreBefore:lastCore,proof:lastProof,coreEvidence:lastCoreEvidence,journal:storageLoad(),trace,notice:$('message').textContent,hash:volatileHash,coreConfirmation:'PENDING_INDEPENDENT_VERIFICATION'};const blob=new Blob([serialize(data)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='registro-publico-prueba-1-usde.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1500);}catch(e){message(e.message,'bad');}}
+$('connect').onclick=connect;$('check').onclick=inspect;$('request').onclick=submit;$('reconcile').onclick=reconcile;$('importHash').onclick=importHash;$('export').onclick=exportReport;$('accept').onchange=update;$('typed').oninput=update;
+window.addEventListener('storage',event=>{if(event.key===PREFIX){resetReady();logView();}});setInterval(update,1000);
+const boot=(async()=>{try{await audit();storageTest();const p=findProvider();if(p)attachProvider(p);$('version').textContent=C.version;const r=storageLoad().record;if(r?.hash){volatileHash=r.hash;$('hashNotice').textContent='HASH GUARDADO DE ESTA PRUEBA: '+r.hash;}message(r&&r.state!=='rejected'?'Existe una solicitud guardada. Verificá el resultado; no repetir.':'Listo para conectar y comprobar. No se ha solicitado ninguna transacción.');}catch(e){fatal=e.message;message(fatal,'bad');}update();})();
+})();
+</script>
+</body>
+</html>
