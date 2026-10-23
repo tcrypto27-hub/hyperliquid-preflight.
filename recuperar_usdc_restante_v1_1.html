@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-QZHFZLrz2pPLjKv1KY8Q38OcggUamT7PVkLAeY0ko6A='; style-src 'self' 'sha256-Crve8UfAwgho/OtcmF0vwia4aeerzy+TwnGAjRNWFto='; connect-src https://rpc.hyperliquid.xyz https://api.hyperliquid.xyz; img-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'">
+<title>USDC-RESTANTE-v1.1 · continuar USDC restante</title>
+<style>
+:root{color-scheme:dark;--bg:#0c181b;--panel:#15272b;--line:#355057;--text:#eef6f6;--soft:#b3c7cd;--mint:#85ebbe;--red:#ffaea1;--warn:#ffdc93}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.55 system-ui,sans-serif;padding:24px 16px;max-width:920px;margin-inline:auto}h1{font-size:1.8rem;line-height:1.2}h2{font-size:1.2rem}.tag{color:var(--mint);font-size:.85rem;font-weight:700;letter-spacing:.05em}.panel{background:var(--panel);border:1px solid var(--line);padding:18px;border-radius:14px;margin:16px 0}.warning{background:#35251c;border:1px solid #795838;padding:14px;border-radius:10px}.mono,pre,code{font:13px/1.6 ui-monospace,monospace;overflow-wrap:anywhere;white-space:pre-wrap}pre{max-height:360px;overflow:auto;padding:12px;background:#081316;border-radius:8px}button{width:100%;padding:15px;border:0;border-radius:10px;margin:7px 0;font:700 1rem system-ui;cursor:pointer;background:var(--mint);color:#05261b}button:disabled{opacity:.42;cursor:not-allowed}button.secondary{background:#29464d;color:var(--text)}button.real{background:#ffc481;color:#302112}input[type=text]{width:100%;padding:14px;border:1px solid var(--line);background:var(--bg);color:var(--text);border-radius:8px;font:15px ui-monospace,monospace}input[type=checkbox]{width:22px;height:22px;vertical-align:middle;margin:12px 8px 12px 0}.notice{margin-top:14px;padding:12px;border-left:4px solid var(--soft);white-space:pre-wrap;overflow-wrap:anywhere}.bad{color:var(--red)}.warn{color:var(--warn)}.ok{color:var(--mint)}.row{padding:12px 0;border-bottom:1px solid var(--line)}small,.soft{color:var(--soft)}summary{cursor:pointer;font-weight:700;padding:8px 0}#hashNotice{font-weight:700;color:var(--warn);overflow-wrap:anywhere}
+textarea{width:100%;background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:10px}select{padding:10px;background:var(--bg);color:var(--text)}a{color:var(--mint)}
+</style>
+</head>
+<body>
+<div class="tag" id="version">USDC-RESTANTE-v1.1</div>
+<h1>Continuar recuperación · etapa B de USDC</h1>
+<p><b>La etapa A YA SE EJECUTÓ.</b> Esta versión no permite solicitar A nuevamente: verifica su hash y su movimiento en HyperCore. Solo después de confirmar ese estado, B enviará 401.375473 USDC a tu principal, con nueva revisión y firma manual. Los USDE que ya recuperaste se pueden mover libremente: el saldo actual de USDE es informativo y no bloquea esta operación.</p>
+<div class="warning"><b>Esta página puede solicitar transacciones REALES, una por vez.</b> La firma y el envío se aprueban manualmente en Rabby. Usá una sola pestaña y conservá los datos del sitio hasta resolver ambas etapas. Nunca introduzcas frases ni claves.</div>
+<section class="panel">
+<h2>1 · Destino y alcance de la recuperación</h2>
+<p class="mono">Origen: 0xa3bbc955301cb3456b382e84036f4baa6dba69d5
+Destino principal de B: 0x8d6ee7d1e00fc44cc790b33b2d104570e184702b
+Firma y gas: Owner 7 · 0xfc689c3ba45960a8b47d0f9f207feea6eb84662a
+Red: HyperEVM 999 · nonces exteriores A: 10 / B: 11
+Gas por etapa: 150000 · techo de comisión por etapa: 0.003 HYPE</p>
+<p>A · Perps → Spot: <b id="stageAStatus">sin solicitud</b><br>B · Spot → principal: <b id="stageBStatus">sin solicitud</b></p>
+<p id="integrity" class="soft">Verificando referencias locales…</p>
+</section>
+<section class="panel">
+<h2>2 · Conectar y comprobar</h2>
+<button id="connect" class="secondary">Conectar Rabby · solo dirección pública</button>
+<button id="check">Comprobar estado y simular etapa A · solo lectura</button>
+<p id="chainState" class="mono">Estado EVM pendiente de lectura.</p>
+<p id="coreState" class="mono">Estado HyperCore pendiente de lectura.</p>
+<div id="checks"></div>
+<p class="soft">Las lecturas de estado EVM usan <code>latest</code>. El bloque mostrado es el observado durante la consulta; no representa una instantánea atómica. Se vuelve a comprobar antes de solicitar cada transacción.</p>
+</section>
+<section class="panel">
+<h2 id="stageTitle">3 · Revisar etapa A</h2>
+<pre id="parameters">Los parámetros y la comisión máxima aparecerán al comprobar el estado.</pre>
+<details><summary>Ver calldata completa y su hash de la etapa actual</summary><pre id="raw"></pre></details>
+<div class="warning">Abrir la solicitud en Rabby prepara una operación real. Revisá <b>View Raw</b>: <b>Sign</b> transmite y consume gas; <b>Cancel</b> la rechaza. Una simulación EVM correcta todavía no demuestra que HyperCore haya procesado la acción.</div>
+<label><input type="checkbox" id="accept"><span id="acceptLabel">Comprendo el movimiento y la firma manual.</span></label>
+<label for="typed" id="typedLabel">Escribí MOVER USDC RESTANTE A SPOT</label>
+<input type="text" id="typed" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="MOVER USDC RESTANTE A SPOT (no una clave)">
+<button id="request" class="real" disabled>Abrir SOLO etapa A en Rabby · REAL</button>
+<div id="hashNotice" role="status"></div>
+<div id="message" class="notice" role="status" aria-live="polite">Inicializando…</div>
+</section>
+<section class="panel">
+<h2>4 · Verificar el resultado</h2>
+<button id="reconcile" class="secondary">Verificar recibo, RawAction, ledger y saldos · solo lectura</button>
+<p id="coreStatus" class="notice">A requiere confirmación EVM y HyperCore antes de habilitar B. Un resultado pendiente bloquea nuevos envíos y nunca habilita repetir la etapa.</p>
+<details><summary>Recuperar un hash existente · no envía</summary>
+<label for="recoverStage">Etapa del hash</label>
+<select id="recoverStage"><option value="A">A · Perps → Spot</option><option value="B">B · Spot → principal</option></select>
+<label for="recoverHash">Hash público de esa etapa</label>
+<input type="text" id="recoverHash" autocomplete="off" spellcheck="false" placeholder="0x… (64 caracteres hexadecimales)">
+<button id="importHash" class="secondary">Validar y registrar hash existente</button>
+<p class="soft">Si el registro local original no se conserva, seleccioná A y registrá el hash ya ejecutado de la etapa A, solo para verificarlo. Esta página nunca vuelve a solicitar A. Después de B, registrá su hash por separado.</p>
+</details>
+<button id="export" class="secondary">Guardar registro público completo · JSON sin secretos</button>
+<details><summary>Ver registro de ambas etapas</summary><pre id="log"></pre></details>
+<p class="soft">La página se detiene al confirmar B. Solo incluye 401.375473 USDC; no cambia propietarios ni mueve HYPE o USDE. No hay envíos automáticos ni reintentos. Si el saldo difiere, bloquea la operación; no ajusta automáticamente el importe.</p>
+</section>
+<section class="panel"><h2>Comprobar View Raw · no firma ni envía</h2>
+<p>Seleccioná la etapa y pegá solo el JSON de View Raw. No pegues frases, claves ni firmas privadas. Esta comparación trabaja localmente y no abre Rabby.</p>
+<label>Etapa <select id="rawStage"><option value="A">A · Perps → Spot</option><option value="B">B · Spot → principal</option></select></label>
+<textarea id="rawInput" rows="7" spellcheck="false" placeholder="JSON de View Raw"></textarea>
+<button id="rawCheck" class="secondary">Verificar Raw · solo comparación local</button>
+<pre id="rawResult">Sin JSON revisado.</pre></section>
+<section class="panel"><h2>Referencia de esta versión</h2>
+<p>Basada en la consola de las pruebas completadas de 1 USDC. Esta versión cambia los importes a 401.375473 USDC y los nonces a 10 y 11. Mantiene gas 150000, el techo 0.003 HYPE por etapa y la misma cuenta principal. No modifica permisos, no usa EntryPoint para enviar y no ejecuta órdenes de trading.</p>
+<p>Preparación basada en los resultados anteriores compartidos en el chat. Las pruebas de software se ejecutaron con respuestas simuladas; no constituyen una simulación real de HyperCore. La primera comprobación consulta de nuevo el estado público y debe pasar antes de solicitar Rabby. Una discrepancia o resultado incierto bloquea, no reintenta.</p>
+<p>Especificación: <a href="https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/hyperevm/interacting-with-hypercore" target="_blank" rel="noopener noreferrer">CoreWriter oficial: acciones 7 y 6</a>. Los importes de A se codifican con 6 decimales y los de B con 8, como en las pruebas anteriores. Los valores se reconstruyen y comprueban localmente antes de habilitar la interfaz.</p></section>
+<script>
+(() => {
+'use strict';
+const C=Object.freeze({"chainId":999,"rpc":"https://rpc.hyperliquid.xyz/evm","info":"https://api.hyperliquid.xyz/info","from":"0xfc689c3ba45960a8b47d0f9f207feea6eb84662a","wallet":"0xa3bbc955301cb3456b382e84036f4baa6dba69d5","implementation":"0x00000110dcdedc9581cb5ecb8467282f2926534d","entryPoint":"0x5ff137d4b0fdcd49dca30c7cf57e578a026d2789","coreWriter":"0x3333333333333333333333333333333333333333","destination":"0x8d6ee7d1e00fc44cc790b33b2d104570e184702b","allOwners":["f5811bae85fa535744841cc1ab72e84ea7a46095e331a112af6ea87b0532359ac12a786729c31f9b99108963ccfe58525b8345cbf08290dabed860eeb7a37078","000000000000000000000000d5c3e5fea28f9eaebf0f0d759418280a26243380","000000000000000000000000f85210b21cc50302f477ba56686d2019dc9b67ad","000000000000000000000000017bd466eaee63f22578702a1851c6d10a0ab249","000000000000000000000000dc06140339066c8cd1c5291072f1381437fcc60d","000000000000000000000000abccbd520994efae7c01bb7dd865da83419e09d8","000000000000000000000000d8c0cefb1689fac2b2f869da6761e89ec35b1401","000000000000000000000000fc689c3ba45960a8b47d0f9f207feea6eb84662a"],"ownerCount":8,"internalNonceKey":8453,"internalSequence":5,"maxFeeBudgetWei":"3000000000000000","codeSHA256":{"proxy":"c5731b62fc7c36236463af8d362688e37c08823abcda35d71ad7d1220eebf578","impl":"232b9f0ef7a71b67bafd3a4bacc47e81bc93374e27d3ed37b6eaa66da5000269","entry":"009b0281380fb08973d2b8e55936c0d55f5a1d65ddc5713944420e119455620c","coreWriter":"fd053fae53aa5ff797c8de9d38f5180d3c280228ae2d669ef9a83ab7834dac83"},"eventTopic":"0x8c7f585fb295f7eb1e6aeb8fba61b23a4fe60beda405f0045073b185c74412e3","sourceMode":"default","destinationMode":"unifiedAccount","replay24Hash":"0xfc8770af509e42854bdd4e14ead7ef51004eca9640a71048ee039b68dfc1ee28","version":"USDC-RESTANTE-v1","token":{"name":"USDC","index":0,"tokenId":"0x6d1e7cde53ba9467b783cb7c530ce054","weiDecimals":8},"amount":"401.375473","value":"0x0","gas":150000,"confirmedUSDETestHash":"0x92341722e8463cf157b9957ce1646cc860e632537fc18b973579ef5b22700467","confirmedUSDECoreHash":"0xc59efb4ebbff4184c7180447250f230000da133456f260566967a6a17af31b6f","fixedUSDE":{"sourceSpotUnits":"0","destinationSpotUnits":"20267717531","tokenIndex":235,"weiDecimals":8},"scope":"Two fixed transfers of 401.375473 USDC with separate manual signatures. A moves the remaining USDC from Perps to Spot in the Smart Wallet; B sends it to the principal only after verifying A. USDE remains source 0 / destination 202.67717531. No owner changes, no automatic sends, no retries.","stages":{"A":{"id":"A","name":"USDC restante · Perps → Spot","action":7,"amount":"401.375473","amount_units":"401375473","amount_decimals":6,"externalNonce":10,"gas":150000,"rawAction":"0x010000070000000000000000000000000000000000000000000000000000000017ec80f10000000000000000000000000000000000000000000000000000000000000000","writerCall":"0x17938e1300000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000044010000070000000000000000000000000000000000000000000000000000000017ec80f1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000","calldata":"0xb61d27f600000000000000000000000033333333333333333333333333333333333333330000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000a417938e1300000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000044010000070000000000000000000000000000000000000000000000000000000017ec80f100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000","calldata_bytes":324,"calldata_sha256":"6d6f00b188c745ac7a4c6cd8c04dcd9b7aa75c9037616b23bfe4eac7da8316b1","eventData":"0x00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000044010000070000000000000000000000000000000000000000000000000000000017ec80f1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000","before":{"sourcePerpsUnits":"401375473","sourceWithdrawableUnits":"401375473","perpsDecimals":6,"sourceSpotUnits":"0","destinationSpotUnits":"100000009","spotDecimals":8},"after":{"sourcePerpsUnits":"0","sourceWithdrawableUnits":"0","perpsDecimals":6,"sourceSpotUnits":"40137547300","destinationSpotUnits":"100000009","spotDecimals":8},"confirmationText":"MOVER USDC RESTANTE A SPOT","ledgerType":"accountClassTransfer","toPerp":false},"B":{"id":"B","name":"USDC restante · Spot → principal","action":6,"amount":"401.375473","amount_units":"40137547300","amount_decimals":8,"externalNonce":11,"gas":150000,"rawAction":"0x010000060000000000000000000000008d6ee7d1e00fc44cc790b33b2d104570e184702b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000958625e24","writerCall":"0x17938e1300000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000064010000060000000000000000000000008d6ee7d1e00fc44cc790b33b2d104570e184702b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000958625e2400000000000000000000000000000000000000000000000000000000","calldata":"0xb61d27f600000000000000000000000033333333333333333333333333333333333333330000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000c417938e1300000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000064010000060000000000000000000000008d6ee7d1e00fc44cc790b33b2d104570e184702b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000958625e240000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000","calldata_bytes":356,"calldata_sha256":"b80d0442a66220f0233dcac79f296f738537ea80ea14d30e79f5c753eec047a8","eventData":"0x00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000064010000060000000000000000000000008d6ee7d1e00fc44cc790b33b2d104570e184702b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000958625e2400000000000000000000000000000000000000000000000000000000","before":{"sourcePerpsUnits":"0","sourceWithdrawableUnits":"0","perpsDecimals":6,"sourceSpotUnits":"40137547300","destinationSpotUnits":"100000009","spotDecimals":8},"after":{"sourcePerpsUnits":"0","sourceWithdrawableUnits":"0","perpsDecimals":6,"sourceSpotUnits":"0","destinationSpotUnits":"40237547309","spotDecimals":8},"confirmationText":"ENVIAR USDC RESTANTE A PRINCIPAL","ledgerType":"spotTransfer","destination":"0x8d6ee7d1e00fc44cc790b33b2d104570e184702b","tokenIndex":0}},"confirmedUSDERemainderHash":"0x785dff8fe652f062288826b19ba047bfb91241328a1f22d4f97601b438c30df5","priorUSDCProofs":{"A":"0xe61b0f66ebc95af051e79e5a4028b8d6e0c5da69728fa9ffbe8626c6862a2718","B":"0x7839e1fda8d4913e1fb2fbbb8d8846fd090dd0971929002553410aa16f44e490"},"usdePrerequisite":{"calldata":"0xb61d27f600000000000000000000000033333333333333333333333333333333333333330000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000c417938e1300000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000064010000060000000000000000000000008d6ee7d1e00fc44cc790b33b2d104570e184702b00000000000000000000000000000000000000000000000000000000000000eb00000000000000000000000000000000000000000000000000000004b216f29b0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000","calldata_bytes":356,"calldata_sha256":"d93c4b1075e3a9663f929d485564a2a059cb1b0bddf77af1a39525dfb6aa5feb","rawAction":"0x010000060000000000000000000000008d6ee7d1e00fc44cc790b33b2d104570e184702b00000000000000000000000000000000000000000000000000000000000000eb00000000000000000000000000000000000000000000000000000004b216f29b","writerCall":"0x17938e1300000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000064010000060000000000000000000000008d6ee7d1e00fc44cc790b33b2d104570e184702b00000000000000000000000000000000000000000000000000000000000000eb00000000000000000000000000000000000000000000000000000004b216f29b00000000000000000000000000000000000000000000000000000000","eventData":"0x00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000064010000060000000000000000000000008d6ee7d1e00fc44cc790b33b2d104570e184702b00000000000000000000000000000000000000000000000000000000000000eb00000000000000000000000000000000000000000000000000000004b216f29b00000000000000000000000000000000000000000000000000000000","gas":150000,"externalNonce":9,"id":"USDE","amount":"201.67717531","amount_units":"20167717531","amount_decimals":8}});
+const PLAN=C.version+':'+C.stages.A.calldata_sha256+':'+C.stages.B.calldata_sha256;
+// Conserva el registro v1 y su plan original para NO perder el hash de la etapa A.
+const PREFIX='tcrypto_usdc_restante_v1',LOCK='tcrypto_rescate_999_manual';
+const PATCH_VERSION='USDC-RESTANTE-v1.1';
+const CONFIRMED_A_HASH='0x1d40772b2ebd810ada5a350f00d5474430c2fd90f7a0f50bc8fc63b74d10bba7';
+const $=id=>document.getElementById(id),lc=x=>String(x??'').toLowerCase();
+const hx=n=>'0x'+BigInt(n).toString(16),wd=n=>BigInt(n).toString(16).padStart(64,'0');
+const HASH=/^0x[0-9a-f]{64}$/,ADDRESS=/^0x[0-9a-f]{40}$/;
+const READ_METHODS=new Set(['eth_chainId','eth_getBlockByNumber','eth_getCode','eth_getBalance','eth_gasPrice','eth_call','eth_getTransactionCount','eth_getTransactionByHash','eth_getTransactionReceipt']);
+const INFO_TYPES=new Set(['spotMeta','userAbstraction','spotClearinghouseState','clearinghouseState','openOrders','userNonFundingLedgerUpdates']);
+const WALLET_METHODS=new Set(['eth_accounts','eth_chainId','eth_requestAccounts','eth_sendTransaction']);
+let provider=null,busy=false,ready=null,fatal='',integrity=false,contextVersion=0,volatileHash=null,volatileStage=null,activeView=null;
+let lastState=null,lastCore=null,lastProof=null,lastCoreEvidence=null,rpcId=0;
+const trace=[],attached=new WeakSet();
+function assert(ok,msg){if(!ok)throw Error(msg);}
+function quantity(x,label){assert(typeof x==='string'&&/^0x[0-9a-f]+$/i.test(x),'RPC inválido: '+label);return BigInt(x);}
+function hexBytes(x,label){assert(typeof x==='string'&&/^0x(?:[0-9a-f]{2})*$/i.test(x),'Bytes inválidos: '+label);return x.toLowerCase();}
+function wordAt(h,offset){const s=hexBytes(h,'ABI').slice(2+offset*2,2+(offset+32)*2);assert(s.length===64,'ABI incompleta');return BigInt('0x'+s);}
+function addrAt(h,offset=0){const s=hexBytes(h,'dirección').slice(2+offset*2,2+(offset+32)*2);assert(s.length===64&&s.slice(0,24)==='0'.repeat(24),'Dirección ABI inválida');return '0x'+s.slice(24);}
+function ownerDecode(h){assert(wordAt(h,0)===32n,'Offset owner inválido');const n=Number(wordAt(h,32));assert(n===32||n===64,'Longitud owner inválida');const s=h.slice(130,130+n*2);assert(s.length===n*2,'Owner truncado');return lc(s);}
+function encodedBytes(h){const s=hexBytes(h,'bytes dinámicos').slice(2);return wd(s.length/2)+s.padEnd(Math.ceil(s.length/64)*64,'0');}
+function decimalUnits(x,decimals=8){assert(typeof x==='string'&&/^(?:0|[1-9][0-9]*)(?:\.[0-9]+)?$/.test(x),'Cantidad decimal inválida');const [a,b='']=x.split('.');assert(b.length<=decimals||/^0*$/.test(b.slice(decimals)),'Precisión decimal inesperada');return BigInt(a)*10n**BigInt(decimals)+BigInt((b.slice(0,decimals).padEnd(decimals,'0'))||'0');}
+function formatUnits(n,decimals=18){n=BigInt(n);const scale=10n**BigInt(decimals),tail=(n%scale).toString().padStart(decimals,'0').replace(/0+$/,'');return (n/scale).toString()+(tail?'.'+tail:'');}
+function serialize(value){return JSON.stringify(value,(_,v)=>typeof v==='bigint'?v.toString():v,2);}
+function deepFreeze(value){if(value&&typeof value==='object'&&!Object.isFrozen(value)){for(const v of Object.values(value))deepFreeze(v);Object.freeze(value);}return value;}
+async function sha(h){const s=hexBytes(h,'SHA-256');assert(crypto?.subtle,'Se requiere HTTPS y WebCrypto');const bytes=Uint8Array.from(s.slice(2).match(/../g)||[],x=>parseInt(x,16));return [...new Uint8Array(await crypto.subtle.digest('SHA-256',bytes))].map(x=>x.toString(16).padStart(2,'0')).join('');}
+async function audit(){
+ for(const v of [C.from,C.wallet,C.implementation,C.entryPoint,C.coreWriter,C.destination])assert(ADDRESS.test(v),'Dirección de referencia inválida');
+ assert(C.chainId===999&&C.gas===150000&&C.value==='0x0'&&C.amount==='401.375473','Parámetros fijos alterados');
+ assert(C.token.name==='USDC'&&C.token.index===0&&C.token.weiDecimals===8&&C.token.tokenId==='0x6d1e7cde53ba9467b783cb7c530ce054','Token USDC alterado');
+ assert(C.ownerCount===8&&C.allOwners.length===8&&C.allOwners[7]===wd(C.from),'Owner 7 de referencia incorrecto');
+ assert(C.internalNonceKey===8453&&C.internalSequence===5&&C.maxFeeBudgetWei==='3000000000000000','Límites del plan alterados');
+ assert(Object.keys(C.stages).join(',')==='A,B','Etapas fijas alteradas');
+ const a=C.stages.A,b=C.stages.B;
+ assert(a.id==='A'&&a.action===7&&a.toPerp===false&&a.amount_units==='401375473'&&a.amount_decimals===6&&a.externalNonce===10&&a.confirmationText==='MOVER USDC RESTANTE A SPOT'&&a.ledgerType==='accountClassTransfer','Etapa A alterada');
+ assert(b.id==='B'&&b.action===6&&b.tokenIndex===0&&b.destination===C.destination&&b.amount_units==='40137547300'&&b.amount_decimals===8&&b.externalNonce===11&&b.confirmationText==='ENVIAR USDC RESTANTE A PRINCIPAL'&&b.ledgerType==='spotTransfer','Etapa B alterada');
+ for(const s of [a,b]){
+  assert(s.amount==='401.375473'&&s.gas===150000,'Importe o gas de etapa alterado');
+  const raw=s.id==='A'?'0x01000007'+wd(401375473)+wd(0):'0x01000006'+wd(C.destination)+wd(0)+wd(40137547300);
+  const writer='0x17938e13'+wd(32)+encodedBytes(raw),call='0xb61d27f6'+wd(C.coreWriter)+wd(0)+wd(96)+encodedBytes(writer);
+  assert(raw===s.rawAction&&writer===s.writerCall&&call===s.calldata,'Calldata no corresponde a la etapa '+s.id);
+  const size=s.id==='A'?324:356;
+  assert(s.calldata_bytes===size&&(s.calldata.length-2)/2===size&&await sha(s.calldata)===s.calldata_sha256,'Calldata o hash alterado: '+s.id);
+  assert(s.eventData==='0x'+wd(32)+encodedBytes(raw),'Evento de referencia alterado: '+s.id);
+  for(const e of [s.before,s.after])assert(e.perpsDecimals===6&&e.spotDecimals===8&&e.sourcePerpsUnits===e.sourceWithdrawableUnits,'Escala o estado de referencia alterado');
+ }
+ assert(a.before.sourcePerpsUnits==='401375473'&&a.before.sourceSpotUnits==='0'&&a.before.destinationSpotUnits==='100000009','Saldo inicial alterado');
+ assert(a.after.sourcePerpsUnits==='0'&&a.after.sourceSpotUnits==='40137547300'&&a.after.destinationSpotUnits==='100000009','Saldo intermedio alterado');
+ assert(serialize(a.after)===serialize(b.before),'Las etapas no son consecutivas');
+ assert(b.after.sourcePerpsUnits==='0'&&b.after.sourceSpotUnits==='0'&&b.after.destinationSpotUnits==='40237547309','Saldo final alterado');
+ assert(C.fixedUSDE.sourceSpotUnits==='0'&&C.fixedUSDE.destinationSpotUnits==='20267717531'&&C.fixedUSDE.tokenIndex===235&&C.fixedUSDE.weiDecimals===8,'Referencia USDE alterada');
+ assert(C.eventTopic==='0x8c7f585fb295f7eb1e6aeb8fba61b23a4fe60beda405f0045073b185c74412e3','Topic RawAction incorrecto');
+ for(const v of Object.values(C.codeSHA256))assert(/^[0-9a-f]{64}$/.test(v),'Pin de bytecode inválido');
+
+ assert(C.destination==='0x8d6ee7d1e00fc44cc790b33b2d104570e184702b'&&C.wallet==='0xa3bbc955301cb3456b382e84036f4baa6dba69d5'&&C.from==='0xfc689c3ba45960a8b47d0f9f207feea6eb84662a','Direcciones fijas cambiaron');
+ assert(C.confirmedUSDERemainderHash==='0x785dff8fe652f062288826b19ba047bfb91241328a1f22d4f97601b438c30df5','Hash USDE previo alterado');
+ const u=C.usdePrerequisite,uraw='0x01000006'+wd(C.destination)+wd(235)+wd(20167717531n),uwriter='0x17938e13'+wd(32)+encodedBytes(uraw),ucall='0xb61d27f6'+wd(C.coreWriter)+wd(0)+wd(96)+encodedBytes(uwriter);
+ assert(u.id==='USDE'&&u.externalNonce===9&&u.gas===150000&&u.calldata===ucall&&u.rawAction===uraw&&u.writerCall===uwriter&&u.eventData==='0x'+wd(32)+encodedBytes(uraw)&&u.calldata_bytes===356&&u.calldata_sha256==='d93c4b1075e3a9663f929d485564a2a059cb1b0bddf77af1a39525dfb6aa5feb'&&await sha(u.calldata)===u.calldata_sha256,'Referencia USDE previa incorrecta');
+ for(const v of Object.values(C))deepFreeze(v);
+ integrity=true;$('integrity').textContent='Dos calldatas fijas verificadas: A 324 bytes · B 356 bytes. Cada etapa requiere su propia revisión y firma.';
+}
+function storageLoad(){
+ let raw;try{raw=localStorage.getItem(PREFIX);}catch(_){throw Error('Registro local inaccesible; no enviar');}
+ if(raw===null)return {v:1,chain:999,plan:PLAN,records:{A:null,B:null},history:[]};
+ let d;try{d=JSON.parse(raw);}catch(_){throw Error('Registro local dañado; no borrar ni repetir');}
+ assert(d&&d.v===1&&d.chain===999&&d.plan===PLAN&&Array.isArray(d.history)&&d.records&&Object.keys(d.records).sort().join(',')==='A,B','Registro de otro plan o formato inválido');
+ for(const id of ['A','B']){const r=d.records[id],s=C.stages[id];if(r===null)continue;assert(r&&typeof r==='object'&&!Array.isArray(r),'Registro inválido');assert(['open','sent','uncertain','rejected','failed','evm_confirmed','core_confirmed'].includes(r.state),'Estado local inválido');assert(r.stage===id&&r.nonce===String(s.externalNonce)&&r.dataSHA256===s.calldata_sha256,'Registro de otra etapa');if(r.hash)assert(HASH.test(r.hash),'Hash guardado inválido');if(r.state==='rejected')assert(!r.hash,'Rechazo incompatible con hash existente');if(['sent','evm_confirmed','core_confirmed'].includes(r.state))assert(HASH.test(r.hash||''),'Falta hash guardado');}
+ if(d.records.B?.state==='core_confirmed')assert(d.records.A?.state==='core_confirmed','Falta confirmación de A para el final guardado');
+ return d;
+}
+function storageSave(d){const s=serialize(d);try{localStorage.setItem(PREFIX,s);assert(localStorage.getItem(PREFIX)===s,'No persiste el registro');}catch(_){throw Error('No se pudo conservar el registro. No repetir.'+(volatileHash?' HASH: '+volatileHash:''));}}
+function storageTest(){const key=PREFIX+'_probe',value=String(Date.now());try{localStorage.setItem(key,value);assert(localStorage.getItem(key)===value,'Sin persistencia');localStorage.removeItem(key);storageLoad();}catch(e){throw Error('Registro inaccesible o dañado: '+e.message);}}
+// Política v1.1: A nunca se puede retransmitir. B solo tras comprobar el hash real de A.
+function nextStage(){const r=storageLoad().records;if(r.B?.state==='core_confirmed')return null;return r.A?.state==='core_confirmed'&&lc(r.A.hash)===CONFIRMED_A_HASH?C.stages.B:null;}
+function blockedRecord(s){const r=storageLoad().records;return s.id!=='B'||r.A?.state!=='core_confirmed'||lc(r.A.hash)!==CONFIRMED_A_HASH||!!(r.B&&r.B.state!=='rejected');}
+function setRecord(s,patch){const d=storageLoad(),old=d.records[s.id];if(old?.hash&&patch.hash)assert(old.hash===patch.hash,'Ya existe otro hash para '+s.id+'; no sobrescribir');if(old?.state==='core_confirmed')assert(!patch.state||patch.state==='core_confirmed','La etapa '+s.id+' ya está confirmada; no degradar');if(old?.state==='evm_confirmed')assert(!patch.state||['evm_confirmed','core_confirmed'].includes(patch.state),'El recibo de '+s.id+' ya está confirmado; no degradar');if(old?.state==='failed')assert(!patch.state||patch.state==='failed','Hay una operación fallida; detener');d.records[s.id]={...old,stage:s.id,nonce:String(s.externalNonce),dataSHA256:s.calldata_sha256,...patch};storageSave(d);return d.records[s.id];}
+function beginRequest(s,record){const d=storageLoad();assert(!blockedRecord(s),'Ya existe una solicitud o falta confirmar A; no repetir');if(d.records[s.id])d.history.push(d.records[s.id]);d.records[s.id]={stage:s.id,nonce:String(s.externalNonce),dataSHA256:s.calldata_sha256,...record};storageSave(d);}
+function logView(){try{$('log').textContent=serialize(storageLoad());}catch(e){$('log').textContent=e.message;}}
+function message(text,kind=''){const n=$('message');n.textContent=text;n.className='notice '+kind;}
+function line(title,detail='',kind='ok'){const row=document.createElement('div');row.className='row '+kind;const a=document.createElement('b');a.textContent=title;const b=document.createElement('div');b.className='mono';b.textContent=detail;row.append(a,b);$('checks').append(row);}
+function stageUI(){
+ const records=storageLoad().records,s=nextStage(),id=s?.id||'done';
+ for(const key of ['A','B'])$('stage'+key+'Status').textContent=records[key]?.state||'sin solicitud';
+ if(activeView!==id){activeView=id;ready=null;$('accept').checked=false;$('typed').value='';$('parameters').textContent=s?'Comprobá la etapa '+s.id+' para revisar los parámetros y la comisión.':records.B?.state==='core_confirmed'?'Ambas etapas terminaron. No se habilitan otras operaciones.':'A ya está ejecutada. Recuperá/verificá el hash A existente (sección 4); no se habilita A ni ninguna otra operación.';}
+ $('stageTitle').textContent=s?'Etapa '+s.id+' · '+s.name:records.B?.state==='core_confirmed'?'COMPLETADO · USDC restante en la cuenta principal':'ETAPA A HISTÓRICA · verificar hash antes de B';
+ $('typedLabel').textContent=s?'Escribí '+s.confirmationText:'Recuperación completada';$('typed').placeholder=s?s.confirmationText:'';
+ $('acceptLabel').textContent=s?(s.id==='A'?'Comprendo que moveré exactamente 401.375473 USDC de Perps a Spot dentro de la Smart Wallet.':'Comprendo que enviaré exactamente 401.375473 USDC del Spot de la Smart Wallet a mi cuenta principal.')+' Sign en Rabby transmite.':'Ambas etapas están confirmadas.';
+ $('request').textContent=s?'Abrir SOLO etapa '+s.id+' en Rabby · REAL':'Recuperación completada · detener';
+ $('check').textContent=s?'Comprobar estado y simular etapa '+s.id+' · solo lectura':records.B?.state==='core_confirmed'?'Recuperación completada · no hay siguiente etapa':'A ya enviada · registrá su hash en sección 4, solo lectura';
+ $('raw').textContent=s?s.calldata+'\n\nEtapa '+s.id+' · '+s.calldata_bytes+' bytes\nSHA-256: '+s.calldata_sha256:'A: '+C.stages.A.calldata_sha256+'\nB: '+C.stages.B.calldata_sha256;
+ return s;
+}
+function update(){let s=null,blocked=true;try{s=stageUI();blocked=!s||blockedRecord(s);}catch(_){}const fresh=ready&&s&&ready.stage===s.id&&Date.now()-ready.time<60000&&!busy&&!fatal&&integrity&&!blocked;$('request').disabled=!(fresh&&$('accept').checked&&$('typed').value===s.confirmationText);for(const id of ['connect','check','reconcile','importHash','recoverStage'])$(id).disabled=busy;$('check').disabled=busy||!s;logView();}
+function resetReady(){ready=null;$('accept').checked=false;$('typed').value='';update();}
+function invalidateContext(){contextVersion++;resetReady();message('Cuenta o red cambió. Repetí la comprobación de lectura; nunca una transacción incierta.','warn');}
+
+function findProvider(){const e=window.ethereum;if(!e)return null;return Array.isArray(e.providers)?e.providers.find(p=>p.isRabby)||e.providers[0]:e;}
+function attachProvider(p){assert(p?.request,'Abrí la página dentro de Rabby');if(provider&&provider!==p)invalidateContext();provider=p;if(p.on&&!attached.has(p)){p.on('chainChanged',invalidateContext);p.on('accountsChanged',invalidateContext);attached.add(p);}return p;}
+async function walletRpc(method,params=[]){assert(WALLET_METHODS.has(method),'Método de wallet no permitido');assert(provider?.request,'Conectá Rabby');return provider.request({method,params});}
+async function walletContext(){const cv=contextVersion;assert(quantity(await walletRpc('eth_chainId'),'chainId wallet')===999n,'Red equivocada: se requiere HyperEVM 999');const a=await walletRpc('eth_accounts');assert(Array.isArray(a)&&lc(a[0])===C.from,'Seleccioná Owner 7 '+C.from+' en Rabby');assert(cv===contextVersion,'Cuenta/red cambió durante la lectura');return cv;}
+async function post(url,body,kind){
+ assert(url===C.rpc||url===C.info,'Endpoint no autorizado');const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),18000);
+ const entry={kind,request:body,requestedAt:new Date().toISOString()};trace.push(entry);
+ try{const response=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),cache:'no-store',credentials:'omit',redirect:'error',referrerPolicy:'no-referrer',signal:controller.signal});assert(response.ok,'Error HTTP '+response.status+' en '+kind);const data=await response.json();entry.response=data;entry.completedAt=new Date().toISOString();return data;}catch(e){entry.error=String(e.message||e);throw Error('Falló lectura '+kind+': '+entry.error);}finally{clearTimeout(timer);}
+}
+async function rpc(method,params=[]){assert(READ_METHODS.has(method),'Método RPC público no permitido');const id=++rpcId,data=await post(C.rpc,{jsonrpc:'2.0',id,method,params},method);assert(data&&data.id===id,'Respuesta RPC no corresponde');if(data.error)throw Error(data.error.message||'Error RPC');assert(Object.prototype.hasOwnProperty.call(data,'result'),'RPC sin resultado');return data.result;}
+async function info(type,extra={}){assert(INFO_TYPES.has(type),'Consulta HyperCore no permitida');return post(C.info,{type,...extra},'HyperCore '+type);}
+async function chainState(s,expectedNonce=s.externalNonce,checkGas=true){
+ assert(quantity(await rpc('eth_chainId'),'chainId RPC')===999n,'El RPC no corresponde a HyperEVM 999');
+ const header=await rpc('eth_getBlockByNumber',['latest',false]);assert(header&&HASH.test(lc(header.hash)),'Cabecera actual inválida');const bn=quantity(header.number,'bloque observado');
+ const codeEvidence={};await Promise.all([['proxy',C.wallet],['impl',C.implementation],['entry',C.entryPoint],['coreWriter',C.coreWriter]].map(async([key,address])=>{const code=await rpc('eth_getCode',[address,'latest']);const digest=await sha(code);codeEvidence[key]={address,bytes:(code.length-2)/2,sha256:digest};assert(digest===C.codeSHA256[key],'Bytecode inesperado: '+key+'; obtenido '+digest);}));
+ const call=(to,data)=>rpc('eth_call',[{to,data},'latest']);
+ const [im,ep,count,next,authorized,nonce]=await Promise.all([call(C.wallet,'0x5c60da1b'),call(C.wallet,'0xb0d691fe'),call(C.wallet,'0x0db02622'),call(C.wallet,'0xd948fd2e'),call(C.wallet,'0xa2e1a8d8'+wd(C.from)),call(C.entryPoint,'0x35567e1a'+wd(C.wallet)+wd(C.internalNonceKey))]);
+ assert(addrAt(im)===C.implementation&&addrAt(ep)===C.entryPoint,'Implementación o EntryPoint inesperado');assert(quantity(count,'ownerCount')===8n&&quantity(next,'nextOwnerIndex')===8n,'Se requieren exactamente ocho propietarios y nextOwnerIndex 8');assert(quantity(authorized,'owner7')===1n,'Owner 7 no está autorizado');assert(quantity(nonce,'nonce interno')===(8453n<<64n)+5n,'Nonce interno fuera del estado final de replays');
+ const owners=await Promise.all(C.allOwners.map((_,i)=>call(C.wallet,'0x8ea69029'+wd(i))));for(let i=0;i<8;i++)assert(ownerDecode(owners[i])===C.allOwners[i],'Propietario '+i+' inesperado');
+ const [balanceHex,gasHex,latestHex,pendingHex]=await Promise.all([rpc('eth_getBalance',[C.from,'latest']),rpc('eth_gasPrice'),rpc('eth_getTransactionCount',[C.from,'latest']),rpc('eth_getTransactionCount',[C.from,'pending'])]);
+ const balance=quantity(balanceHex,'saldo'),gasPrice=quantity(gasHex,'gasPrice'),latest=quantity(latestHex,'nonce exterior'),pending=quantity(pendingHex,'nonce pendiente');assert(gasPrice>0n,'Gas price inválido');assert(latest===BigInt(expectedNonce)&&pending===BigInt(expectedNonce),'Nonce exterior distinto de '+expectedNonce+' o transacción pendiente. No repetir.');
+ const base=quantity(header.baseFeePerGas,'baseFeePerGas'),cap=2n*(gasPrice>base?gasPrice:base),cost=BigInt(C.gas)*cap;
+ assert(BigInt(C.gas)<=quantity(header.gasLimit,'gas del bloque'),'Gas fijo excede el bloque');if(checkGas){assert(cost<=BigInt(C.maxFeeBudgetWei),'Gas supera el tope local de 0.003 HYPE; no enviar');assert(balance>=cost,'Saldo HYPE insuficiente para el máximo solicitado');}
+ return {observedBlock:header.number,bn,header,codeEvidence,ownerCount:8,nextOwnerIndex:8,owner7:true,internalSequence:5,nonce:latest,balance,gasPrice,base,cap,cost,checkedAt:Date.now()};
+}
+function spotBalance(state,label,index,name){assert(state&&Array.isArray(state.balances),'Respuesta Spot inválida: '+label);const found=state.balances.filter(b=>b.token===index||b.coin===name);assert(found.length===1,name+' ausente o ambiguo: '+label);const b=found[0];assert(b.token===index&&b.coin===name,'Identidad de saldo '+name+' incorrecta: '+label);return {total:decimalUnits(b.total,8),hold:decimalUnits(b.hold,8),raw:b};}
+// Un USDE que ya pertenece a la cuenta principal puede haber sido intercambiado o movido.
+// Si falta del listado Spot, registramos cero como dato informativo. Nunca se usa para autorizar B.
+function optionalSpotBalance(state,label,index,name){assert(state&&Array.isArray(state.balances),'Respuesta Spot inválida: '+label);const found=state.balances.filter(b=>b.token===index||b.coin===name);assert(found.length<=1,name+' ambiguo en '+label);if(found.length===0)return {total:0n,hold:0n,raw:null,absent:true};return spotBalance(state,label,index,name);}
+function availableBalance(state,index){assert(Array.isArray(state.tokenToAvailableAfterMaintenance),'Falta saldo disponible de la cuenta unified');const found=state.tokenToAvailableAfterMaintenance.filter(p=>Array.isArray(p)&&p[0]===index);assert(found.length===1&&found[0].length===2,'Saldo disponible ausente o ambiguo');return decimalUnits(found[0][1],8);}
+async function coreState(expected){
+ const [meta,sourceMode,destinationMode,sourceSpot,destinationSpot,positions,orders]=await Promise.all([info('spotMeta'),info('userAbstraction',{user:C.wallet}),info('userAbstraction',{user:C.destination}),info('spotClearinghouseState',{user:C.wallet}),info('spotClearinghouseState',{user:C.destination}),info('clearinghouseState',{user:C.wallet}),info('openOrders',{user:C.wallet})]);
+ assert(meta&&Array.isArray(meta.tokens),'Metadatos Spot inválidos');const tokens=meta.tokens.filter(t=>t.index===0||t.name==='USDC');assert(tokens.length===1,'Token USDC ausente o ambiguo');const token=tokens[0];assert(token.index===0&&token.name==='USDC'&&token.weiDecimals===8&&lc(token.tokenId)===C.token.tokenId,'Metadatos USDC no coinciden');
+ const usdeTokens=meta.tokens.filter(t=>t.index===235||t.name==='USDE');assert(usdeTokens.length===1&&usdeTokens[0].index===235&&usdeTokens[0].name==='USDE'&&usdeTokens[0].weiDecimals===8&&lc(usdeTokens[0].tokenId)==='0x2e6d84f2d7ca82e6581e03523e4389f7','Metadatos USDE cambiaron');
+ assert(sourceMode===C.sourceMode&&destinationMode===C.destinationMode,'Modo de cuenta HyperCore inesperado');
+ const source=spotBalance(sourceSpot,'origen',0,'USDC'),destination=spotBalance(destinationSpot,'destino',0,'USDC'),sourceUSDE=optionalSpotBalance(sourceSpot,'origen',235,'USDE'),destinationUSDE=optionalSpotBalance(destinationSpot,'destino',235,'USDE');
+ assert(source.total===BigInt(expected.sourceSpotUnits)&&source.hold===0n,'Saldo o hold USDC Spot del origen inesperado; detener');assert(destination.total===BigInt(expected.destinationSpotUnits)&&destination.hold===0n,'Saldo o hold USDC del destino inesperado; detener');
+ // Solo el estado USDC determina si B es segura. El saldo USDE es independiente.
+ const available=availableBalance(destinationSpot,0);assert(available===destination.total,'USDC de destino no está completamente disponible');
+ assert(positions&&Array.isArray(positions.assetPositions)&&positions.assetPositions.length===0,'El origen tiene posiciones o respuesta inválida');assert(positions.marginSummary&&decimalUnits(positions.marginSummary.totalMarginUsed,6)===0n,'Margen utilizado inesperado');
+ const perps=decimalUnits(positions.marginSummary.accountValue,6),rawUsd=decimalUnits(positions.marginSummary.totalRawUsd,6),withdrawable=decimalUnits(positions.withdrawable,6);
+ assert(perps===BigInt(expected.sourcePerpsUnits)&&rawUsd===perps&&withdrawable===BigInt(expected.sourceWithdrawableUnits),'USDC Perps o saldo retirable del origen inesperado; detener');
+ assert(Array.isArray(orders)&&orders.length===0,'El origen tiene órdenes o respuesta inválida');
+ return {token,sourceMode,destinationMode,source,destination,sourceUSDE,destinationUSDE,available,perps,withdrawable,sourceSpot,destinationSpot,positions,orders,checkedAt:Date.now()};
+}
+function transaction(s,state){return {chainId:'0x3e7',from:C.from,to:C.wallet,value:'0x0',data:s.calldata,gas:hx(s.gas),maxFeePerGas:hx(state.cap),maxPriorityFeePerGas:'0x0',nonce:hx(s.externalNonce)};}
+function showState(s,state,core){lastState=state;lastCore=core;$('chainState').textContent='Bloque observado '+state.bn+' · ocho propietarios · Owner 7 autorizado · nonce exterior '+state.nonce+' · saldo '+formatUnits(state.balance)+' HYPE';$('coreState').textContent='USDC Perps origen '+formatUnits(core.perps,6)+' · Spot origen '+formatUnits(core.source.total,8)+' · destino '+formatUnits(core.destination.total,8)+' · holds USDC 0\nUSDE informativo: origen '+formatUnits(core.sourceUSDE.total,8)+' · destino '+formatUnits(core.destinationUSDE.total,8)+' (pueden cambiar sin afectar esta etapa)';$('parameters').textContent=serialize(transaction(s,state));line('Estado EVM verificado','Proxy, implementación, EntryPoint, CoreWriter, ocho owners y nonces exactos.');line('Estado HyperCore verificado para etapa '+s.id,'USDC token 0; origen default, destino unifiedAccount; sin órdenes ni posiciones en origen. Los USDE son informativos, no congelados.');line('Máximo solicitado de gas',formatUnits(state.cost)+' HYPE · '+s.gas+' gas × '+state.cap+' wei/gas. Rabby puede recalcular: revisar View Raw.');}
+async function verifyUSDEPrerequisite(){return verifyReceipt(C.usdePrerequisite,C.confirmedUSDERemainderHash);}
+async function verifyPredecessor(requireConfirmed=true){
+ const a=C.stages.A,r=storageLoad().records.A;assert(r?.hash,'Recuperá primero el hash de la etapa A');assert(lc(r.hash)===CONFIRMED_A_HASH,'Hash A distinto de la transacción ejecutada; detener');if(requireConfirmed)assert(r.state==='core_confirmed','La etapa A todavía no está confirmada en HyperCore');
+ const proof=await verifyReceipt(a,r.hash),coreEvidence=await verifyCoreLedger(a,proof);return {proof,coreEvidence};
+}
+async function preflight(s=nextStage(),simulate=true){
+ assert(s&&C.stages[s.id]===s,'No hay otra etapa autorizada');assert(integrity&&!fatal,'Integridad local no verificada');storageTest();assert(nextStage()?.id===s.id&&!blockedRecord(s),'Ya existe una solicitud o falta verificar la etapa anterior; no repetir');
+ attachProvider(provider||findProvider());const cv=await walletContext();const predecessor=s.id==='B'?await verifyPredecessor():await verifyUSDEPrerequisite();const state=await chainState(s),core=await coreState(s.before);
+ assert(navigator.locks?.request,'Web Locks no disponible: lectura posible, solicitud deshabilitada');
+ if(simulate){const result=await rpc('eth_call',[{from:C.from,to:C.wallet,value:'0x0',data:s.calldata,gas:hx(s.gas)},'latest']);assert(result==='0x','Retorno inesperado de la simulación EVM');}
+ await walletContext();assert(cv===contextVersion,'Cuenta o red cambió durante la comprobación');assert(nextStage()?.id===s.id&&!blockedRecord(s),'Apareció otra solicitud o cambió la etapa; no repetir');
+ showState(s,state,core);if(predecessor)line(s.id==='B'?'Etapa A revalidada':'USDE anterior revalidado',s.id==='B'?'Recibo canónico, RawAction y ledger accountClassTransfer exactos; saldo intermedio correcto.':'Recibo canónico y RawAction de la recuperación USDE exactos; saldos actuales USDE 0 / 202.67717531.');if(simulate)line('Simulación EVM sin revert','No confirma el procesamiento de HyperCore.','warn');return {...state,stage:s.id,core,predecessor,contextVersion:cv,time:Date.now()};
+}
+async function inspect(){if(busy)return;busy=true;resetReady();$('checks').replaceChildren();try{const s=nextStage(),state=await preflight(s,true);ready=state;message('Comprobación correcta para revisar SOLO etapa '+s.id+'. La firma final requiere tu aprobación en Rabby.','ok');}catch(e){message(e.message,'bad');}finally{busy=false;update();}}
+async function submit(){
+ if(busy)return;update();if($('request').disabled)return;const reviewed=ready,s=C.stages[reviewed.stage];busy=true;resetReady();volatileHash=null;volatileStage=s.id;$('hashNotice').textContent='';
+ try{assert(navigator.locks?.request,'Sin bloqueo entre pestañas');await navigator.locks.request(LOCK,{ifAvailable:true},async lock=>{
+  assert(lock,'Otra pestaña está preparando una operación');assert(nextStage()?.id===s.id&&!blockedRecord(s),'Existe una solicitud o cambió la etapa; no repetir');$('checks').replaceChildren();
+  const state=await preflight(s,true);assert(state.cap<=reviewed.cap,'La comisión aumentó; repetir solo la comprobación y revisar');
+  const action=s.id==='A'?'mover exactamente 401.375473 USDC de Perps a Spot dentro de '+C.wallet:'enviar exactamente 401.375473 USDC desde '+C.wallet+' hacia '+C.destination;
+  const yes=window.confirm('ETAPA '+s.id+' REAL: '+action+'. Máximo solicitado de gas '+formatUnits(state.cost)+' HYPE. Sign en Rabby transmite. ¿Abrir sólo esta solicitud?');if(!yes){message('Cancelado antes de solicitar Rabby.');return;}
+  assert(Date.now()-state.time<60000,'Comprobación vencida; volver a comprobar');const cv=await walletContext();assert(cv===state.contextVersion,'Cuenta/red cambió; comprobar otra vez');
+  const predecessor=s.id==='B'?await verifyPredecessor():await verifyUSDEPrerequisite();const now=await chainState(s),core=await coreState(s.before);assert(now.cap<=state.cap&&now.balance>=state.cost,'Gas o saldo cambió; repetir solo la comprobación');
+  await walletContext();assert(cv===contextVersion&&Date.now()-state.time<60000,'Contexto cambió o comprobación vencida');
+  const [latest,pending]=await Promise.all([rpc('eth_getTransactionCount',[C.from,'latest']),rpc('eth_getTransactionCount',[C.from,'pending'])]);assert(quantity(latest,'nonce final')===BigInt(s.externalNonce)&&quantity(pending,'nonce final pendiente')===BigInt(s.externalNonce),'Nonce cambió o hay otra transacción; no enviar');assert(cv===contextVersion&&nextStage()?.id===s.id&&!blockedRecord(s),'Cambió el contexto o existe otra solicitud');
+  const tx=transaction(s,state);beginRequest(s,{state:'open',hash:null,requestedAt:Date.now(),tx,preflight:{evm:now,core,predecessor},referenceBlock:now.observedBlock});
+  message('Solicitud REAL de etapa '+s.id+' abierta en Rabby. No pulses de nuevo. Sign transmite; Cancel rechaza.','warn');update();let result;
+  try{result=await walletRpc('eth_sendTransaction',[tx]);}catch(e){const code=Number(e?.code??e?.data?.code);if(code===4001){setRecord(s,{state:'rejected',error:String(e.message||e)});message('Rabby notificó rechazo (4001). Podés volver a comprobar esta etapa antes de abrir otra solicitud.','warn');}else{setRecord(s,{state:'uncertain',error:String(e.message||e)});message('RESULTADO INCIERTO EN '+s.id+'. No repetir ni abrir otra etapa. Consultá Rabby y registrá su hash si existe.','bad');}return;}
+  assert(HASH.test(lc(result)),'La wallet devolvió un hash inválido; resultado incierto, no repetir');volatileHash=lc(result);$('hashNotice').textContent='HASH ETAPA '+s.id+' — guardalo: '+volatileHash;
+  setRecord(s,{state:'sent',hash:volatileHash});message('Etapa '+s.id+' enviada. Verificá el recibo y HyperCore. No repetir ni iniciar otra etapa hasta confirmar.','warn');
+ });}catch(e){try{const r=storageLoad().records[s.id];if(r?.state==='open')setRecord(s,{state:'uncertain',error:String(e.message||e),...(volatileHash?{hash:volatileHash}:{})});}catch(_){}message(String(e.message||e)+(volatileHash?' HASH: '+volatileHash:''),'bad');}finally{busy=false;update();}
+}
+
+async function verifyTransaction(s,hash){
+ const tx=await rpc('eth_getTransactionByHash',[hash]);assert(tx&&lc(tx.hash)===hash,'Transacción no encontrada');assert(lc(tx.from)===C.from&&lc(tx.to)===C.wallet&&quantity(tx.value,'value')===0n,'La transacción no corresponde al plan');assert(quantity(tx.chainId,'chainId tx')===999n&&quantity(tx.type,'tipo tx')===2n,'Cadena o tipo de transacción inesperado');
+ const data=hexBytes(tx.input??tx.data,'calldata ejecutada');assert(data===s.calldata&&await sha(data)===s.calldata_sha256,'Calldata ejecutada distinta de la referencia');assert(quantity(tx.nonce,'nonce tx')===BigInt(s.externalNonce)&&quantity(tx.gas,'gas tx')===150000n,'Nonce o límite de gas distinto del plan');
+ const cap=quantity(tx.maxFeePerGas,'maxFeePerGas'),priority=quantity(tx.maxPriorityFeePerGas,'maxPriorityFeePerGas');assert(cap>0n&&priority<=cap&&cap*150000n<=BigInt(C.maxFeeBudgetWei),'Comisión de la transacción fuera del límite');
+ return {tx,cap};
+}
+async function verifyReceipt(s,hash){
+ assert(HASH.test(hash),'Hash inválido');assert(quantity(await rpc('eth_chainId'),'chainId RPC')===999n,'RPC en otra cadena');
+ const {tx,cap}=await verifyTransaction(s,hash),receipt=await rpc('eth_getTransactionReceipt',[hash]);
+ if(!receipt)throw Object.assign(Error('SIN RECIBO. Mantener pendiente; no repetir.'),{receiptPending:true,hash,transaction:tx});
+ assert(lc(receipt.transactionHash)===hash,'Recibo de otro hash');assert(lc(receipt.from)===C.from&&lc(receipt.to)===C.wallet,'Recibo de otro remitente/destino');
+ const used=quantity(receipt.gasUsed,'gasUsed'),paid=quantity(receipt.effectiveGasPrice,'effectiveGasPrice');assert(used<=150000n&&paid<=cap,'Gas efectivo inesperado');
+ assert(HASH.test(lc(receipt.blockHash))&&lc(tx.blockHash)===lc(receipt.blockHash)&&quantity(tx.blockNumber,'tx block')===quantity(receipt.blockNumber,'receipt block'),'Bloques de recibo y transacción no coinciden');
+ const [block,head]=await Promise.all([rpc('eth_getBlockByNumber',[receipt.blockNumber,false]),rpc('eth_getBlockByNumber',['latest',false])]);assert(block&&lc(block.hash)===lc(receipt.blockHash)&&quantity(block.number,'bloque canónico')===quantity(receipt.blockNumber,'bloque recibo'),'El bloque del recibo no es canónico');assert(head&&quantity(head.number,'bloque actual')>=quantity(receipt.blockNumber,'bloque recibo')+1n,'Esperar al menos otro bloque y verificar de nuevo, sin repetir la transacción');
+ const status=quantity(receipt.status,'status');if(status===0n)throw Object.assign(Error('Transacción EVM fallida. No repetir automáticamente.'),{receiptFailure:true});assert(status===1n,'Estado de recibo inválido');
+ assert(Array.isArray(receipt.logs),'Recibo sin logs');let count=0;
+ for(const log of receipt.logs){assert(log.removed!==true,'Evento eliminado por reorganización');if(lc(log.address)!==C.coreWriter||lc(log.topics?.[0])!==C.eventTopic)continue;assert(log.topics.length===2&&lc(log.topics[1])==='0x'+wd(C.wallet),'RawAction emitido para otro usuario');assert(hexBytes(log.data,'evento RawAction')===s.eventData,'RawAction contiene otra acción');assert(lc(log.transactionHash)===hash&&lc(log.blockHash)===lc(receipt.blockHash)&&quantity(log.blockNumber,'log block')===quantity(receipt.blockNumber,'receipt block'),'Evento no corresponde al recibo');count++;}
+ assert(count===1,'Se requiere un único RawAction exacto');return {stage:s.id,hash,evmConfirmed:true,coreConfirmed:false,transaction:tx,receipt,block,gasCostWei:String(used*paid),verifiedAt:Date.now()};
+}
+function stable(value){if(Array.isArray(value))return '['+value.map(stable).join(',')+']';if(value&&typeof value==='object')return '{'+Object.keys(value).sort().map(k=>JSON.stringify(k)+':'+stable(value[k])).join(',')+'}';return JSON.stringify(value);}
+async function verifyCoreLedger(s,proof){
+ const startTime=Number(quantity(proof.block.timestamp,'timestamp'))*1000,endTime=Math.min(Date.now(),startTime+600000);assert(Number.isSafeInteger(startTime)&&endTime>=startTime,'Hora del recibo o reloj local inválido');
+ const jobs=[['sourceLedger',C.wallet]];if(s.id==='B')jobs.push(['destinationLedger',C.destination]);
+ const results=await Promise.all(jobs.map(([,user])=>info('userNonFundingLedgerUpdates',{user,startTime,endTime})));
+ const evidence={stage:s.id,startTime,endTime,verifiedAt:Date.now(),coreLedgerConfirmed:false};
+ const matches=results.map((rows,i)=>{
+  assert(Array.isArray(rows)&&rows.length<500,'Ledger inválido o posiblemente truncado');evidence[jobs[i][0]]=rows;
+  for(const r of rows)assert(r&&Number.isSafeInteger(r.time)&&HASH.test(lc(r.hash))&&r.delta&&typeof r.delta==='object','Entrada de ledger inválida');
+  const found=rows.filter(r=>r.time>=startTime&&r.time<=endTime&&r.delta.type===s.ledgerType);assert(found.length===1,'Se requiere un único movimiento Core '+s.ledgerType+' en '+jobs[i][0]);
+  const r=found[0],d=r.delta;
+  if(s.id==='A'){assert(decimalUnits(d.usdc,6)===401375473n&&d.toPerp===false,'Ledger A no es exactamente 401.375473 USDC de Perps a Spot');}
+  else {assert(d.token==='USDC'&&decimalUnits(d.amount,8)===40137547300n&&lc(d.user)===C.wallet&&lc(d.destination)===C.destination,'Ledger B no corresponde al envío fijo');assert(decimalUnits(d.fee,8)===0n&&decimalUnits(d.nativeTokenFee,18)===0n,'Comisión Core de B inesperada');}
+  return r;
+ });
+ if(s.id==='B')assert(stable(matches[0])===stable(matches[1]),'Los ledgers de origen y destino no contienen el mismo movimiento');
+ evidence.coreLedgerConfirmed=true;evidence.match=matches[0];return evidence;
+}
+async function confirmStage(s,hash,imported=false){
+ const proof=await verifyReceipt(s,hash);lastProof=proof;volatileHash=hash;volatileStage=s.id;$('hashNotice').textContent='HASH ETAPA '+s.id+' — guardalo: '+hash;
+ const old=storageLoad().records[s.id];setRecord(s,{state:old?.state==='core_confirmed'?'core_confirmed':'evm_confirmed',hash,proof,...(imported?{imported:true}:{})});
+ message('EVM CONFIRMADO en '+s.id+': transacción, recibo y RawAction exactos. Comprobando HyperCore; no repetir.','ok');
+ try{
+  const predecessor=s.id==='B'?await verifyPredecessor(false):null,coreEvidence=await verifyCoreLedger(s,proof);
+  if(predecessor){assert(quantity(predecessor.proof.receipt.blockNumber,'bloque A')<=quantity(proof.receipt.blockNumber,'bloque B'),'B precede a A');assert(predecessor.coreEvidence.match.time<=coreEvidence.match.time,'El ledger de B precede al de A');}
+  const state=await chainState(s,s.externalNonce+1,false),core=await coreState(s.after);
+  lastState=state;lastCore=core;lastCoreEvidence={stage:s.id,coreConfirmed:true,ledger:coreEvidence,postState:{evm:state,core},predecessor,verifiedAt:Date.now()};
+  if(predecessor)setRecord(C.stages.A,{state:'core_confirmed',hash:predecessor.proof.hash,proof:{...predecessor.proof,coreConfirmed:true},coreEvidence:predecessor.coreEvidence,confirmedWithFollowingStage:'B',finalState:lastCoreEvidence.postState});
+  setRecord(s,{state:'core_confirmed',hash,proof:{...proof,coreConfirmed:true},coreEvidence:lastCoreEvidence});
+  $('coreStatus').textContent=s.id==='A'?'ETAPA A CONFIRMADA: 401.375473 USDC pasaron de Perps a Spot. Perps origen 0; Spot origen 401.375473; destino 1.00000009. Podés comprobar B con el primer botón; requiere otra revisión y firma.':'USDC RESTANTE CONFIRMADO: ambas etapas verificadas en EVM y HyperCore. Perps origen 0; Spot origen 0; principal 402.37547309 USDC. La verificación no exige mantener saldos USDE. DETENER: no quedan más operaciones en esta página.';
+  message($('coreStatus').textContent,'ok');line('HyperCore confirmado · etapa '+s.id,'Hash Core '+coreEvidence.match.hash+' · recibo, ledger y saldos exactos.');
+  return {...proof,coreConfirmed:true};
+ }catch(e){lastCoreEvidence={stage:s.id,coreConfirmed:false,error:String(e.message||e),checkedAt:Date.now()};setRecord(s,{coreCheck:lastCoreEvidence});$('coreStatus').textContent='EVM confirmado en '+s.id+'; HyperCore pendiente o estado distinto: '+e.message+'. No repetir. Para recuperar después de B, registrá los hashes de A y B por separado.';message($('coreStatus').textContent,'warn');return proof;}
+}
+function verificationStage(){const r=storageLoad().records;return r.B&&r.B.state!=='rejected'?C.stages.B:C.stages.A;}
+async function reconcile(){if(busy)return;busy=true;resetReady();$('checks').replaceChildren();let s;try{storageTest();s=verificationStage();const r=storageLoad().records[s.id],hash=r?.hash||(volatileStage===s.id?volatileHash:null);assert(hash,'No hay hash de etapa '+s.id+'. Consultá Rabby e ingresá su hash; no repetir.');await confirmStage(s,hash);}catch(e){if(e.receiptFailure&&s){try{setRecord(s,{state:'failed',error:e.message});}catch(_){}}message(e.message,'bad');}finally{busy=false;update();}}
+async function importHash(){if(busy)return;busy=true;resetReady();let hash,s;try{storageTest();s=C.stages[$('recoverStage').value];assert(s,'Seleccioná etapa A o B');hash=lc($('recoverHash').value.trim());assert(HASH.test(hash),'Ingresá un hash público válido, no claves ni calldata');const r=storageLoad().records[s.id];assert(!r?.hash||r.hash===hash,'Ya existe otro hash para esta etapa; no sobrescribir');await confirmStage(s,hash,true);}catch(e){if(e.receiptPending){volatileHash=hash;volatileStage=s.id;$('hashNotice').textContent='HASH PENDIENTE ETAPA '+s.id+' — guardalo: '+hash;try{setRecord(s,{state:'uncertain',hash,imported:true,pendingTransaction:e.transaction,error:e.message});message('Hash exacto conservado. Todavía sin recibo; resultado pendiente, no repetir.','warn');}catch(storageError){message(storageError.message+' HASH: '+hash,'bad');}}else{if(e.receiptFailure&&s){try{setRecord(s,{state:'failed',hash,error:e.message});}catch(_){}}message(e.message,'bad');}}finally{busy=false;update();}}
+
+async function connect(){if(busy)return;busy=true;resetReady();try{attachProvider(findProvider());await walletRpc('eth_requestAccounts');await walletContext();message('Owner 7 conectado en HyperEVM 999. Podés comprobar el estado sin enviar.','ok');}catch(e){message(e.message,'bad');}finally{busy=false;update();}}
+function exportReport(){try{const data={version:C.version,patchVersion:PATCH_VERSION,config:C,state:lastState,coreState:lastCore,proof:lastProof,coreEvidence:lastCoreEvidence,journal:storageLoad(),trace,notice:$('message').textContent,hash:volatileHash,stage:volatileStage};const blob=new Blob([serialize(data)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='registro-publico-usdc-restante.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1500);}catch(e){message(e.message,'bad');}}
+
+async function verifyRawInput(){
+ const out=$('rawResult');out.textContent='Comprobando localmente…';
+ try{
+  assert(integrity&&!fatal,'Integridad local no verificada');const id=$('rawStage').value,s=C.stages[id];assert(s,'Etapa incorrecta');
+  const raw=$('rawInput').value.trim();assert(raw.length>0&&raw.length<20000,'Pegá el JSON completo de View Raw, sin claves');
+  const t=JSON.parse(raw);assert(t&&typeof t==='object'&&!Array.isArray(t),'Se requiere un objeto JSON');
+  const num=(v,label)=>{if(typeof v==='number'){assert(Number.isSafeInteger(v)&&v>=0,'Número inválido: '+label);return BigInt(v);}assert(typeof v==='string'&&/^(?:0x[0-9a-fA-F]+|[0-9]+)$/.test(v),'Cantidad inválida: '+label);return BigInt(v);};
+  const allowed=new Set(['chainId','from','to','value','data','gas','gasLimit','maxFeePerGas','maxPriorityFeePerGas','nonce','type','accessList']);
+  for(const k of Object.keys(t))assert(allowed.has(k),'Campo no previsto: '+k+'; revisión manual necesaria');
+  assert(num(t.chainId,'chainId')===999n&&lc(t.from)===C.from&&lc(t.to)===C.wallet&&num(t.value,'value')===0n,'Cadena, firmante, destino o valor distinto');
+  assert(hexBytes(t.data,'data')===s.calldata&&await sha(t.data)===s.calldata_sha256,'DATA NO COINCIDE; no firmar');
+  if(t.gas!==undefined&&t.gasLimit!==undefined)assert(num(t.gas,'gas')===num(t.gasLimit,'gasLimit'),'Dos límites gas distintos');
+  assert(num(t.gas??t.gasLimit,'gas')===BigInt(s.gas)&&num(t.nonce,'nonce')===BigInt(s.externalNonce),'Gas o nonce distinto');
+  if(t.type!==undefined)assert(num(t.type,'type')===2n,'Tipo de transacción distinto de EIP-1559');
+  if(t.accessList!==undefined)assert(Array.isArray(t.accessList)&&t.accessList.length===0,'Access list inesperada');
+  const cap=num(t.maxFeePerGas,'maxFeePerGas'),tip=num(t.maxPriorityFeePerGas,'maxPriorityFeePerGas'),max=cap*BigInt(s.gas);
+  assert(cap>0n&&tip<=cap&&max<=BigInt(C.maxFeeBudgetWei),'Comisión fuera del tope del plan');
+  out.textContent='USDC RESTANTE · ETAPA '+s.id+' · RAW COINCIDE\nImporte: '+C.amount+' USDC\nData: '+s.calldata_bytes+' bytes, igualdad exacta\nSHA-256: '+s.calldata_sha256+'\nNonce exterior: '+s.externalNonce+'\nGas: '+s.gas+'\nmaxFeePerGas: '+cap+' wei\nmaxPriorityFeePerGas: '+tip+' wei\nMáximo solicitado: '+formatUnits(max)+' HYPE\nComisión pendiente de revisión; no autoriza firma.\nSolo comprobación local; sin firma ni envío.';
+ }catch(e){out.textContent='NO FIRMAR: '+e.message;}
+}
+$('rawCheck').onclick=verifyRawInput;
+
+$('connect').onclick=connect;$('check').onclick=inspect;$('request').onclick=submit;$('reconcile').onclick=reconcile;$('importHash').onclick=importHash;$('export').onclick=exportReport;$('accept').onchange=update;$('typed').oninput=update;
+window.addEventListener('storage',event=>{if(event.key===PREFIX){contextVersion++;resetReady();logView();}});setInterval(update,1000);
+const boot=(async()=>{try{await audit();storageTest();const p=findProvider();if(p)attachProvider(p);$('version').textContent=PATCH_VERSION+' · registro v1 conservado';$('recoverHash').value=CONFIRMED_A_HASH;$('recoverStage').value='A';const r=storageLoad().records,hashes=['A','B'].filter(id=>r[id]?.hash).map(id=>'Etapa '+id+': '+r[id].hash);if(hashes.length)$('hashNotice').textContent='HASHES GUARDADOS\n'+hashes.join('\n');message(r.B?.state==='core_confirmed'?'Ambas etapas constan confirmadas. No hay más operaciones.':r.A?.state==='core_confirmed'&&lc(r.A.hash)===CONFIRMED_A_HASH?'Etapa A ya confirmada con hash exacto. Solo se permite comprobar B; no repetir A.':'Etapa A NO SE PUEDE ENVIAR en v1.1. Verificá el hash A existente en la sección 4 antes de continuar con B.');}catch(e){fatal=e.message;message(fatal,'bad');}update();})();
+})();
+</script>
+</body>
+</html>
